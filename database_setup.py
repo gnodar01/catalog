@@ -63,7 +63,7 @@ class Option(Base):
     __tablename__ = 'option'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(String(250))
     field_id = Column(Integer, ForeignKey('field.id'))
     field = relationship(Field)
 
