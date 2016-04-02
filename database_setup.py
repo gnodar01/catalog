@@ -49,10 +49,12 @@ class Field(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    kind = Column(Enum('public-readable',
-                          'public-writeable',
-                          'private'),
-                           nullable=False)
+    kind = Column(Enum('short_text',
+                        'long_text',
+                        'drop_down',
+                        'check_box',
+                        'radio'),
+                        nullable=False)
     record_id = Column(Integer, ForeignKey('record.id'))
     record = relationship(Record)
 
