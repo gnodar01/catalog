@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import (Base, User, Catalog, Category, Record, Field,
 							RecordTemplate, FieldTemplate, OptionTemplate)
 
-engine = create_engine('sqlite:///restaurantmenuwithusers.db')
+engine = create_engine('sqlite:///catalogizer.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
