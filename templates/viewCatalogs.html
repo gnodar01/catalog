@@ -15,7 +15,13 @@
 		<h2> Your Catalogs </h2>
 		<ul>
 			{% for catalog in catalogs %}
-				<li>{{ catalog.name }}</li>
+				<li>
+					<a href={{ url_for('viewCategories', catalog_id=catalog.id )}}> {{ catalog.name }} </a>
+					<br>
+					<a href="#">Edit</a>
+					<a href="#">Delete</a>
+				</li>
+
 			{% endfor %}
 		</ul>
 	{% endif %}
