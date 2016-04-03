@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Enum
+from sqlalchemy import Column, ForeignKey, Integer, String, Enum, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -34,18 +34,18 @@ class Category(Base):
     catalog_id = Column(Integer, ForeignKey('catalog.id'))
     catalog = relationship(Catalog)
 
-
-class Record(Base):
-    __tablename__ = 'record'
+class RecordTemplate(Base):
+    __tablename__ = 'record_template'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    custom = Column(Boolean, default=False)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+    template_fields = relationship("FieldTemplate",
+                                   back_populates="record_template")
 
-
-class Field(Base):
-    __tablename__ = 'field'
+class FieldTemplate(Base):
+    __tablename__ = 'field_template'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
@@ -55,15 +55,44 @@ class Field(Base):
                         'check_box',
                         'radio'),
                         nullable=False)
+    record_template_id = Column(Integer, ForeignKey('record_template.id'))
+    record_template = relationship("RecordTemplate",
+                                    back_populates='template_fields')
+
+class OptionTemplate(Base):
+    __tablename__ = 'option'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    field_template_id = Column(Integer, ForeignKey('field_template.id'))
+    field_template = relationship(FieldTemplate)
+
+class Record(Base):
+    __tablename__ = 'record'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    record_template_id = Column(Integer, ForeignKey('record_template.id'))
+    category_id = Column(Integer, ForeignKey('category.id'))
+    record_template = relationship(RecordTemplate)
+    category = relationship(Category)
+
+
+class Field(Base):
+    __tablename__ = 'field'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
     record_id = Column(Integer, ForeignKey('record.id'))
+    field_template_id = Column(Integer, ForeignKey('field_template.id'))
     record = relationship(Record)
+    field_template = relationship(FieldTemplate)
 
 
 class Option(Base):
     __tablename__ = 'option'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    value = Column(String(500), nullable=False)
     field_id = Column(Integer, ForeignKey('field.id'))
     field = relationship(Field)
 
