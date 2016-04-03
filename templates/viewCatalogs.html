@@ -2,13 +2,24 @@
 {% block title %} View Catalogs {% endblock %}
 {% block content %}
 
-{% if catalogs %}
-	<ul>
-		{% for catalog in catalogs %}
-			<li>{{catalog.name}}</li>
-		{% endfor %}
-	</ul>
-{% endif %}
+<div>
+	<h1> Catalogs </h1>
+</div>
+
+<div>
+	<a href={{ url_for('newCatalog') }}> Create New Catalog </a>
+</div>
+
+<div>
+	{% if catalogs %}
+		<h2> Your Catalogs </h2>
+		<ul>
+			{% for catalog in catalogs %}
+				<li>{{ catalog.name }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+</div>
 
 
 {% endblock %}
