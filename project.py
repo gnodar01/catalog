@@ -24,55 +24,55 @@ def newCatalog():
 	pass
 
 @app.route('/catalog/<int:catalog_id>/edit/')
-def editCatalog():
+def editCatalog(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/delete/')
-def deleteCatalog():
+def deleteCatalog(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/')
-def viewCategories():
+def viewCategories(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/new')
-def newCategory():
+def newCategory(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
-def editCategory():
+def editCategory(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
-def deleteCategory():
+def deleteCategory(catalogID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
-def viewRecords():
-	pass
-
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/newTemplate/')
-def newRecordTemplate():
-	pass
-
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/customTemplate/')
-def newCustomTemplate():
+def viewRecords(catalogID, categoryID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
-def addRecord():
+def newRecordTemplate(catalogID, categoryID):
+	pass
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/custom/')
+def newCustomTemplate(catalogID, categoryID):
+	pass
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
+def addRecord(catalogID, categoryID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
-def editRecord():
+def editRecord(catalogID, categoryID, recordID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
-def deleteRecord():
+def deleteRecord(catalogID, categoryID, recordID):
 	pass
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
-def showRecord():
+def showRecord(catalogID, categoryID, recordID):
 	pass
 
 
