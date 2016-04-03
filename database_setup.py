@@ -60,7 +60,7 @@ class FieldTemplate(Base):
     record_template = relationship("RecordTemplate",
                                     back_populates='template_fields')
 
-class OptionTemplate(Base):
+class Option(Base):
     __tablename__ = 'option'
 
     id = Column(Integer, primary_key=True)

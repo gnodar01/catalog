@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from database_setup import (Base, User, Catalog, Category, Record, Field,
-							RecordTemplate, FieldTemplate, OptionTemplate)
+							RecordTemplate, FieldTemplate, Option)
 
 engine = create_engine('sqlite:///catalogizer.db')
 Base.metadata.bind = engine
@@ -14,7 +14,7 @@ User1 = User(name='Goku', email='luv2battle@kamehouse.com')
 session.add(User1)
 session.commit()
 
-catalog1 = Catalog(name='Battle-log', privacy='public', user_id=1)
+catalog1 = Catalog(name='Battle-log', privacy='public-readable', user_id=1)
 session.add(catalog1)
 session.commit()
 
@@ -34,48 +34,48 @@ fieldTemplate2 = FieldTemplate(name='Damage (min-max)', kind='check_box', record
 session.add(fieldTemplate2)
 session.commit()
 
-optionTemplate1 = OptionTemplate(name='1', field_template_id=2)
-session.add(optionTemplate1)
+option1 = Option(name='1', field_template_id=2)
+session.add(option1)
 session.commit()
 
-optionTemplate2 = OptionTemplate(name='2', field_template_id=2)
-session.add(optionTemplate2)
+option2 = Option(name='2', field_template_id=2)
+session.add(option2)
 session.commit()
 
-optionTemplate3 = OptionTemplate(name='3', field_template_id=2)
-session.add(optionTemplate3)
+option3 = Option(name='3', field_template_id=2)
+session.add(option3)
 session.commit()
 
-optionTemplate4 = OptionTemplate(name='4', field_template_id=2)
-session.add(optionTemplate4)
+option4 = Option(name='4', field_template_id=2)
+session.add(option4)
 session.commit()
 
-optionTemplate5 = OptionTemplate(name='5', field_template_id=2)
-session.add(optionTemplate5)
+option5 = Option(name='5', field_template_id=2)
+session.add(option5)
 session.commit()
 
-optionTemplate6 = OptionTemplate(name='Over 9000!!!', field_template_id=2)
-session.add(optionTemplate6)
+option6 = Option(name='Over 9000!!!', field_template_id=2)
+session.add(option6)
 session.commit()
 
 fieldTemplate3 = FieldTemplate(name='Charge Time', kind='drop_down', record_template_id=1)
 session.add(fieldTemplate3)
 session.commit()
 
-optionTemplate6 = OptionTemplate(name='A couple seconds', field_template_id=3)
-session.add(optionTemplate6)
+option6 = Option(name='A couple seconds', field_template_id=3)
+session.add(option6)
 session.commit()
 
-optionTemplate7 = OptionTemplate(name='A couple minutes', field_template_id=3)
-session.add(optionTemplate7)
+option7 = Option(name='A couple minutes', field_template_id=3)
+session.add(option7)
 session.commit()
 
-optionTemplate8 = OptionTemplate(name='A couple episodes', field_template_id=3)
-session.add(optionTemplate8)
+option8 = Option(name='A couple episodes', field_template_id=3)
+session.add(option8)
 session.commit()
 
-optionTemplate9 = OptionTemplate(name='Depends on the mood', field_template_id=3)
-session.add(optionTemplate9)
+option9 = Option(name='Depends on the mood', field_template_id=3)
+session.add(option9)
 session.commit()
 
 fieldTemplate4 = FieldTemplate(name='Blast Description', kind='long_text', record_template_id=1)
