@@ -18,8 +18,8 @@
 				<li>
 					<a href={{ url_for('viewCategories', catalog_id=catalog.id )}}> {{ catalog.name }} </a>
 					<br>
-					<a href="#">Edit</a>
-					<a href="#">Delete</a>
+					<a href={{ url_for('editCatalog', catalog_id=catalog.id )}}>Edit</a>
+					<a href={{ url_for('deleteCatalog', catalog_id=catalog.id )}}>Delete</a>
 				</li>
 
 			{% endfor %}

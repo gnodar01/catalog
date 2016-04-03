@@ -2,7 +2,30 @@
 {% block title %}  {% endblock %}
 {% block content %}
 
+<div>
+	<h1>{{catalog.name}} Categories</h1>
+</div>
 
+<div>
+	<a href={{ url_for('viewCatalogs') }}> Back to Catalogs </a>
+	<br>
+	<a href={{ url_for('newCategory', catalog_id=catalog.id) }}> Create New Category </a>
+</div>
+
+<div>
+	{% if categories %}
+		<h2>Categories</h2>
+		<ul>
+			{% for category in categories %}
+				<li>
+					<a href={{ url_for('viewRecords', catalog_id=catalog.id, category_id=category.id) }}> {{ category.name }} </a>
+					<br>
+					<a href={{ url_for('editCategory', catalog_id=catalog.id, category_id=category.id) }}>Edit</a>
+					<a href={{ url_for('deleteCategory', catalog_id=catalog.id, category_id=category.id) }}>Delete</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 
 
 

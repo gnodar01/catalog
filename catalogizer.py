@@ -26,26 +26,30 @@ def newCatalog():
 
 @app.route('/catalog/<int:catalog_id>/edit/')
 def editCatalog(catalog_id):
-    return render_template('editCatalog.html')
+    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    return render_template('editCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/delete/')
 def deleteCatalog(catalog_id):
-    return render_template('deleteCatalog.html')
+    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    return render_template('deleteCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/category/')
 def viewCategories(catalog_id):
-    return render_template('viewCategories.html')
+    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    categories = session.query(Category).filter_by(catalog_id=catalog_id).all()
+    return render_template('viewCategories.html', catalog=catalog, categories=categories)
 
 @app.route('/catalog/<int:catalog_id>/category/new')
 def newCategory(catalog_id):
     return render_template('newCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
-def editCategory(catalog_id):
+def editCategory(catalog_id, category_id):
     return render_template('editCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
-def deleteCategory(catalog_id):
+def deleteCategory(catalog_id, category_id):
     return render_template('deleteCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
