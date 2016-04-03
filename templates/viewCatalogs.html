@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} View Catalogs {% endblock %}
+{% block content %}
+
+{% if catalogs %}
+	<ul>
+		{% for catalog in catalogs %}
+			<li>{{catalog.name}}</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+
+{% endblock %}

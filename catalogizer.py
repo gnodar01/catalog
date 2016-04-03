@@ -18,8 +18,7 @@ session = DBSession()
 @app.route('/catalog/')
 def viewCatalogs():
 	catalogs = session.query(Catalog).all()
-	print vars(catalogs[0])
-	return "yo dawg"
+	return render_template('viewCatalogs.html', catalogs=catalogs)
 
 @app.route('/catalog/new/')
 def newCatalog():

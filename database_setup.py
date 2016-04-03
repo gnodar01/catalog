@@ -25,7 +25,6 @@ class Catalog(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
-
 class Category(Base):
     __tablename__ = 'category'
 
