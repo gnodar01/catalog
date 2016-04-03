@@ -25,55 +25,55 @@ def newCatalog():
     return render_template('newCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/edit/')
-def editCatalog(catalogID):
+def editCatalog(catalog_id):
     return render_template('editCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/delete/')
-def deleteCatalog(catalogID):
+def deleteCatalog(catalog_id):
     return render_template('deleteCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/category/')
-def viewCategories(catalogID):
+def viewCategories(catalog_id):
     return render_template('viewCategories.html')
 
 @app.route('/catalog/<int:catalog_id>/category/new')
-def newCategory(catalogID):
+def newCategory(catalog_id):
     return render_template('newCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
-def editCategory(catalogID):
+def editCategory(catalog_id):
     return render_template('editCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
-def deleteCategory(catalogID):
+def deleteCategory(catalog_id):
     return render_template('deleteCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
-def viewRecords(catalogID, categoryID):
+def viewRecords(catalog_id, category_id):
     return render_template('viewRecords.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
-def newRecordTemplate(catalogID, categoryID):
+def newRecordTemplate(catalog_id, category_id):
     return render_template('recordTemplate.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/custom/')
-def newCustomTemplate(catalogID, categoryID):
+def newCustomTemplate(catalog_id, category_id):
     return render_template('customTemplate.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
-def addRecord(catalogID, categoryID):
+def addRecord(catalog_id, category_id):
     return render_template('addRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
-def editRecord(catalogID, categoryID, recordID):
+def editRecord(catalog_id, category_id, record_id):
     return render_template('editRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
-def deleteRecord(catalogID, categoryID, recordID):
+def deleteRecord(catalog_id, category_id, record_id):
     return render_template('deleteRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
-def showRecord(catalogID, categoryID, recordID):
+def showRecord(catalog_id, category_id, record_id):
     return render_template('showRecord.html')
 
 
