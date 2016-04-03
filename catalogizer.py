@@ -4,7 +4,7 @@ app = Flask(__name__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import (Base, User, Catalog, Category, Record, Field,
-							RecordTemplate, FieldTemplate, Option)
+                            RecordTemplate, FieldTemplate, Option)
 
 APPLICATION_NAME = "Catalogizer"
 
@@ -17,64 +17,64 @@ session = DBSession()
 @app.route('/')
 @app.route('/catalog/')
 def viewCatalogs():
-	catalogs = session.query(Catalog).all()
-	return render_template('viewCatalogs.html', catalogs=catalogs)
+    catalogs = session.query(Catalog).all()
+    return render_template('viewCatalogs.html', catalogs=catalogs)
 
 @app.route('/catalog/new/')
 def newCatalog():
-	pass
+    return render_template('newCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/edit/')
 def editCatalog(catalogID):
-	pass
+    return render_template('editCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/delete/')
 def deleteCatalog(catalogID):
-	pass
+    return render_template('deleteCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/category/')
 def viewCategories(catalogID):
-	pass
+    return render_template('viewCategories.html')
 
 @app.route('/catalog/<int:catalog_id>/category/new')
 def newCategory(catalogID):
-	pass
+    return render_template('newCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
 def editCategory(catalogID):
-	pass
+    return render_template('editCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
 def deleteCategory(catalogID):
-	pass
+    return render_template('deleteCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
 def viewRecords(catalogID, categoryID):
-	pass
+    return render_template('viewRecords.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
 def newRecordTemplate(catalogID, categoryID):
-	pass
+    return render_template('recordTemplate.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/custom/')
 def newCustomTemplate(catalogID, categoryID):
-	pass
+    return render_template('customTemplate.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalogID, categoryID):
-	pass
+    return render_template('addRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
 def editRecord(catalogID, categoryID, recordID):
-	pass
+    return render_template('editRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
 def deleteRecord(catalogID, categoryID, recordID):
-	pass
+    return render_template('deleteRecord.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalogID, categoryID, recordID):
-	pass
+    return render_template('showRecord.html')
 
 
 
