@@ -39,6 +39,7 @@ class RecordTemplate(Base):
 
     id = Column(Integer, primary_key=True)
     custom = Column(Boolean, default=False)
+    name = Column(String(250))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     template_fields = relationship("FieldTemplate",
@@ -81,21 +82,11 @@ class Field(Base):
     __tablename__ = 'field'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    value = Column(String(500), nullable=False)
     record_id = Column(Integer, ForeignKey('record.id'))
     field_template_id = Column(Integer, ForeignKey('field_template.id'))
     record = relationship(Record)
     field_template = relationship(FieldTemplate)
-
-
-class Option(Base):
-    __tablename__ = 'option'
-
-    id = Column(Integer, primary_key=True)
-    value = Column(String(500), nullable=False)
-    field_id = Column(Integer, ForeignKey('field.id'))
-    field = relationship(Field)
-
 
 
 engine = create_engine('sqlite:///catalogizer.db')
