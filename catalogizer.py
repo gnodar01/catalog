@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 app = Flask(__name__)
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import (Base, User, Catalog, Category, Record, Field,
                             RecordTemplate, FieldTemplate, Option)
@@ -101,41 +101,44 @@ def showRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     record = getRecord(record_id)
-    return render_template('showRecord.html', catalog=catalog, category=category, record=record)
+    fields = getFields(record_id)
+    return render_template('showRecord.html', catalog=catalog, category=category, record=record, fields=fields)
 
 
 # Helper functions to filter through and get database elements
 
 def getCatalogs():
-    catalogs = session.query(Catalog).all()
-    return catalogs
+    return session.query(Catalog).all()
 
 def getCatalog(catalog_id):
-    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
-    return catalog
+    return session.query(Catalog).filter_by(id=catalog_id).one()
 
 def getCategories(catalog_id):
-    categories = session.query(Category).filter_by(catalog_id=catalog_id).all()
-    return categories
+    return session.query(Category).filter_by(catalog_id=catalog_id).all()
 
 def getCategory(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
-    return category
+    return session.query(Category).filter_by(id=category_id).one()
 
 def getRecord(record_id):
-    record = session.query(Record).filter_by(id=record_id).one()
-    return record
+    return session.query(Record).filter_by(id=record_id).one()
 
 def getRecords(category_id):
-    records = session.query(Record).filter_by(category_id=category_id).all()
-    return records
+    return session.query(Record).filter_by(category_id=category_id).all()
 
+def getFields(record_id):
+    record = getRecord(record_id)
+    fieldTemplates = session.query(FieldTemplate).filter_by(record_template_id=record.record_template_id).order_by(asc(FieldTemplate.id))
+    fields = []
 
+    for fieldTemplate in fieldTemplates:
+        fieldLabel = fieldTemplate.label
+        valueList = session.query(Field).filter_by(field_template_id=fieldTemplate.id).all()
+        fieldValues = []
+        for v in valueList:
+            fieldValues.append(v.value)
+        fields.append( (fieldLabel, fieldValues) )
 
-
-
-
-
+    return fields
 
 
 
