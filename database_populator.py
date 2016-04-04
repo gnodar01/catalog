@@ -102,7 +102,7 @@ field4 = Field(value='Depends on the mood', record_id=1, field_template_id=3)
 session.add(field4)
 session.commit()
 
-field5 = Field(value='Developed my the turtle sage himself.', record_id=1, field_template_id=4)
+field5 = Field(value='Developed by the turtle sage himself.', record_id=1, field_template_id=4)
 session.add(field5)
 session.commit()
 
