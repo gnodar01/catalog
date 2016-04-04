@@ -59,7 +59,10 @@ def deleteCategory(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
 def viewRecords(catalog_id, category_id):
-    return render_template('viewRecords.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    records = getRecords(category_id)
+    return render_template('viewRecords.html', catalog=catalog, category=category, records=records)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
 def newRecordTemplate(catalog_id, category_id):
@@ -102,6 +105,10 @@ def getCategories(catalog_id):
 def getCategory(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     return category
+
+def getRecords(category_id):
+    records = session.query(Record).filter_by(category_id=category_id).all()
+    return records
 
 
 
