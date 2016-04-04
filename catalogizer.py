@@ -42,8 +42,8 @@ def viewCategories(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/category/new')
 def newCategory(catalog_id):
-    # catalog = getCatelog(catalog_id)
-    return render_template('newCategory.html')
+    catalog = getCatalog(catalog_id)
+    return render_template('newCategory.html', catalog)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
 def editCategory(catalog_id, category_id):
