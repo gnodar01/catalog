@@ -47,11 +47,15 @@ def newCategory(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
 def editCategory(catalog_id, category_id):
-    return render_template('editCategory.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('editCategory.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
 def deleteCategory(catalog_id, category_id):
-    return render_template('deleteCategory.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('deleteCategory.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
 def viewRecords(catalog_id, category_id):
@@ -81,6 +85,7 @@ def deleteRecord(catalog_id, category_id, record_id):
 def showRecord(catalog_id, category_id, record_id):
     return render_template('showRecord.html')
 
+# Helper functions to filter through and get database elements
 
 def getCatalogs():
     catalogs = session.query(Catalog).all()
@@ -93,6 +98,10 @@ def getCatalog(catalog_id):
 def getCategories(catalog_id):
     categories = session.query(Category).filter_by(catalog_id=catalog_id).all()
     return categories
+
+def getCategory(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    return category
 
 
 
