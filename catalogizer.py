@@ -87,6 +87,7 @@ def deleteRecord(catalog_id, category_id, record_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalog_id, category_id, record_id):
     return render_template('showRecord.html')
+    
 
 # Helper functions to filter through and get database elements
 
