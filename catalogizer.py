@@ -66,11 +66,15 @@ def viewRecords(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
 def newRecordTemplate(catalog_id, category_id):
-    return render_template('recordTemplate.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('recordTemplate.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/custom/')
 def newCustomTemplate(catalog_id, category_id):
-    return render_template('customTemplate.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('customTemplate.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
@@ -87,7 +91,7 @@ def deleteRecord(catalog_id, category_id, record_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalog_id, category_id, record_id):
     return render_template('showRecord.html')
-    
+
 
 # Helper functions to filter through and get database elements
 
