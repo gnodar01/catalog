@@ -48,7 +48,7 @@ class FieldTemplate(Base):
     __tablename__ = 'field_template'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    label = Column(String(250), nullable=False)
     kind = Column(Enum('short_text',
                         'long_text',
                         'drop_down',
