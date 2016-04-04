@@ -6,6 +6,15 @@
 	<h1> {{catalog.name}} - {{category.name}}: {{record.name}} </h1>
 </div>
 
-
+{% if fields %}
+	<dl>
+	{% for field in fields %}
+		<dt>{{ field[0] }}</dt>
+		{% for value in field[1] %}
+			<dd>{{ value }}</dd>
+		{% endfor %}
+	{% endfor %}
+	</dl>
+{% endif %}
 
 {% endblock %}
