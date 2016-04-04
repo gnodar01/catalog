@@ -78,19 +78,30 @@ def newCustomTemplate(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
-    return render_template('addRecord.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('addRecord.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
 def editRecord(catalog_id, category_id, record_id):
-    return render_template('editRecord.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    return render_template('editRecord.html', catalog=catalog, category=category, record=record)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
 def deleteRecord(catalog_id, category_id, record_id):
-    return render_template('deleteRecord.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalog_id, category_id, record_id):
-    return render_template('showRecord.html')
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    return render_template('showRecord.html', catalog=catalog, category=category, record=record)
 
 
 # Helper functions to filter through and get database elements
@@ -110,6 +121,10 @@ def getCategories(catalog_id):
 def getCategory(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     return category
+
+def getRecord(record_id):
+    record = session.query(Record).filter_by(id=record_id).one()
+    return record
 
 def getRecords(category_id):
     records = session.query(Record).filter_by(category_id=category_id).all()
