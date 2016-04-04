@@ -17,7 +17,7 @@ session = DBSession()
 @app.route('/')
 @app.route('/catalog/')
 def viewCatalogs():
-    catalogs = session.query(Catalog).all()
+    catalogs = getCatalogs()
     return render_template('viewCatalogs.html', catalogs=catalogs)
 
 @app.route('/catalog/new/')
@@ -26,22 +26,23 @@ def newCatalog():
 
 @app.route('/catalog/<int:catalog_id>/edit/')
 def editCatalog(catalog_id):
-    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    catalog = getCatalog(catalog_id)
     return render_template('editCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/delete/')
 def deleteCatalog(catalog_id):
-    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    catalog = getCatalog(catalog_id)
     return render_template('deleteCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/category/')
 def viewCategories(catalog_id):
-    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
-    categories = session.query(Category).filter_by(catalog_id=catalog_id).all()
+    catalog = getCatalog(catalog_id)
+    categories = getCategories(catalog_id)
     return render_template('viewCategories.html', catalog=catalog, categories=categories)
 
 @app.route('/catalog/<int:catalog_id>/category/new')
 def newCategory(catalog_id):
+    # catalog = getCatelog(catalog_id)
     return render_template('newCategory.html')
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
@@ -81,7 +82,17 @@ def showRecord(catalog_id, category_id, record_id):
     return render_template('showRecord.html')
 
 
+def getCatalogs():
+    catalogs = session.query(Catalog).all()
+    return catalogs
 
+def getCatalog(catalog_id):
+    catalog = session.query(Catalog).filter_by(id=catalog_id).one()
+    return catalog
+
+def getCategories(catalog_id):
+    categories = session.query(Category).filter_by(catalog_id=catalog_id).all()
+    return categories
 
 
 
