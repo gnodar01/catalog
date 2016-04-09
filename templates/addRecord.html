@@ -17,7 +17,7 @@
 		<h2> Your templates </h2>
 		{% for rTemplate in rTemplates %}
 			<li> 
-				<a href={{url_for('')> {{rTemplate.name}} </a>
+				<a href={{ url_for('newRecord', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> {{rTemplate.name}} </a>
 			</li>
 		{% endfor %}
 	{% endif %}

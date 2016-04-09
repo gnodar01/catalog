@@ -71,6 +71,13 @@ def addRecord(catalog_id, category_id):
     recordTemplates = getTemplates(category_id)
     return render_template('addRecord.html', catalog=catalog, category=category, rTemplates=recordTemplates)
 
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/')
+def newRecord(catalog_id, category_id, record_template_id):
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    recordTemplate = getRecordTemplate(record_template_id)
+    return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate)
+
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
 def newRecordTemplate(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
@@ -134,6 +141,9 @@ def getFields(record_id):
         fields.append( (fieldLabel, fieldValues) )
 
     return fields
+
+def getRecordTemplate(record_template_id):
+    return session.query(RecordTemplate).filter_by(id=record_template_id).one()
 
 def getTemplates(category_id):
     return session.query(RecordTemplate).filter_by(category_id=category_id).all()
