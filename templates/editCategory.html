@@ -6,6 +6,9 @@
 	<h1> Rename {{catalog.name}}'s {{category.name}} </h1>
 </div>
 
+<div>
+	<a href={{ url_for('viewCategories', catalog_id=catalog.id) }}> Cancel </a>
+</div>
 
 
 {% endblock %}
