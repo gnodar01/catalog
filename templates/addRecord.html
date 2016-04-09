@@ -12,5 +12,15 @@
 	<a href={{ url_for('newRecordTemplate', catalog_id=catalog.id, category_id=category.id) }}> Create New Record Template </a>
 </div>
 
+<div>
+	{% if rTemplates %}
+		<h2> Your templates </h2>
+		{% for rTemplate in rTemplates %}
+			<li> 
+				<a href={{url_for('')> {{rTemplate.name}} </a>
+			</li>
+		{% endfor %}
+	{% endif %}
+</div>
 
 {% endblock %}

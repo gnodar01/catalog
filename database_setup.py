@@ -38,7 +38,7 @@ class RecordTemplate(Base):
 
     id = Column(Integer, primary_key=True)
     custom = Column(Boolean, default=False)
-    name = Column(String(250))
+    name = Column(String(250), nullable=False)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     template_fields = relationship("FieldTemplate",
