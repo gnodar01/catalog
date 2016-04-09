@@ -9,8 +9,6 @@
 <div>
 	<a href={{ url_for('viewCategories', catalog_id=catalog.id) }}> Back to {{catalog.name}} </a>
 	<br>
-	<a href={{ url_for('newRecordTemplate', catalog_id=catalog.id, category_id=category.id) }}> Create New Record Template </a>
-	<br>
 	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Add Record </a>
 </div>
 

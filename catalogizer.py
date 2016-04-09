@@ -64,23 +64,17 @@ def viewRecords(catalog_id, category_id):
     records = getRecords(category_id)
     return render_template('viewRecords.html', catalog=catalog, category=category, records=records)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/new/')
-def newRecordTemplate(catalog_id, category_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    return render_template('recordTemplate.html', catalog=catalog, category=category)
-
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/custom/')
-def newCustomTemplate(catalog_id, category_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    return render_template('customTemplate.html', catalog=catalog, category=category)
-
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     return render_template('addRecord.html', catalog=catalog, category=category)
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
+def newRecordTemplate(catalog_id, category_id):
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    return render_template('recordTemplate.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
 def editRecord(catalog_id, category_id, record_id):
