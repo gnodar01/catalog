@@ -81,6 +81,7 @@ def newRecord(catalog_id, category_id, record_template_id):
         category = getCategory(category_id)
         recordTemplate = getRecordTemplate(record_template_id)
         fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
+        print fieldTemplatesWithOptions
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
@@ -161,18 +162,23 @@ def getFields(record_id):
     return fields
 
 def getFieldTemplatesWithOptions(record_template_id):
-    """Returns field template kind, label, and if a kind with several values, an option list in the form of an array of tupples of the field kind, field label, and an array of options. E.g. [ ( field template kind, field template label, [option1, option2] ) ]"""
+    """Returns a list of dictionaries containing field template id, label, kind, and a list of options for that field template."""
     fieldTemplates = getFieldTemplates(record_template_id)
     fieldsWithOptions = []
 
     for fieldTemplate in fieldTemplates:
-        ftLabel = fieldTemplate.label
-        ftKind = fieldTemplate.kind
+        fieldTemplateDict = {
+            'id': fieldTemplate.id,
+            'label': fieldTemplate.label,
+            'kind': fieldTemplate.kind,
+            'options': []
+        }
+
         options = getOptions(fieldTemplate.id)
-        optionList = []
         for option in options:
-            optionList.append(option.name)
-        fieldsWithOptions.append( (ftKind, ftLabel, optionList) )
+            fieldTemplateDict['options'].append(option.name)
+
+        fieldsWithOptions.append(fieldTemplateDict)
 
     return fieldsWithOptions
 

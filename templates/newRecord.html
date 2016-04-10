@@ -12,58 +12,56 @@
 
 <div>
 	<h2> Record details </h2>
-	{% if fTemplates %}
-		<form action="#" method="post">
-			{% for fTemplate in fTemplates %}
-				{% if fTemplate[0] == "short_text" %}
-					{{ fTemplate[1] }}:
-					<br>
-					<input type="text" name="showt">
-					<br>
-				{% endif %}
+	<form action="#" method="post">
+		{% for fTemplate in fTemplates %}
+			{% if fTemplate['kind'] == "short_text" %}
+				{{ fTemplate['label'] }}:
+				<br>
+				<input type="text" name="showt">
+				<br>
+			{% endif %}
 
-				{% if fTemplate[0] == "long_text" %}
-					{{ fTemplate[1] }}:
-					<br>
-					<textarea type="text" maxlength="500" rows="3" name="lowng"></textarea>
-					<br>
-				{% endif %}
+			{% if fTemplate['kind'] == "long_text" %}
+				{{ fTemplate['label'] }}:
+				<br>
+				<textarea type="text" maxlength="500" rows="3" name="lowng"></textarea>
+				<br>
+			{% endif %}
 
-				{% if fTemplate[0] == "check_box" %}
-					{{ fTemplate[1] }}:
+			{% if fTemplate['kind'] == "check_box" %}
+				{{ fTemplate['label'] }}:
+				<br>
+				{% for option in fTemplate['options'] %}
+					<input type="checkbox", value='{{option}}' name="chyek"> {{option}}
 					<br>
-					{% for option in fTemplate[2] %}
-						<input type="checkbox", value='{{option}}' name="chyek"> {{option}}
-						<br>
+				{% endfor %}
+				<br>
+			{% endif %}
+
+			{% if fTemplate['kind'] == "radio" %}
+				{{ fTemplate['label'] }}:
+				<br>
+				{% for option in fTemplate['options'] %}
+					<input type="radio" value="{{option}}" name="raydyo"> {{option}}
+					<br>
+				{% endfor %}
+				<br>
+			{% endif %}
+
+			{% if fTemplate['kind'] == "drop_down" %}
+				{{ fTemplate['label'] }}:
+				<br>
+				<select name="dryop dyown">
+					{% for option in fTemplate['options'] %}
+						<option value="{{option}}"> {{option}} </option>
 					{% endfor %}
-					<br>
-				{% endif %}
-
-				{% if fTemplate[0] == "radio" %}
-					{{ fTemplate[1] }}:
-					<br>
-					{% for option in fTemplate[2] %}
-						<input type="radio" value="{{option}}" name="raydyo"> {{option}}
-						<br>
-					{% endfor %}
-					<br>
-				{% endif %}
-
-				{% if fTemplate[0] == "drop_down" %}
-					{{ fTemplate[1] }}:
-					<br>
-					<select name="dryop dyown">
-						{% for option in fTemplate[2] %}
-							<option value="{{option}}"> {{option}} </option>
-						{% endfor %}
-					</select>
-					<br>
-				{% endif %}
-			{% endfor %}
-			<input type="submit">
-		</form>
-		<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
-	{% endif %}
+				</select>
+				<br>
+			{% endif %}
+		{% endfor %}
+		<input type="submit">
+	</form>
+	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
 </div>
 
 {% endblock %}
