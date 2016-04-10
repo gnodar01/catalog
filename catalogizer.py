@@ -74,14 +74,31 @@ def addRecord(catalog_id, category_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
     if request.method == 'POST':
-        print request.form
+        recordTemplate = getRecordTemplate(record_template_id)
+        # The request object is a Werkzeug data structure called ImmutableMultiDict, which has a copy method that returns a mutable Wekzeug MultiDict.
+        formData = request.form.copy()
+        # Pop the first item (the record name) for a list on the dict, and remove the key from the dict.
+        recordName = formData.pop('record-name')
+        newRecordEntry = Record(name=recordName, record_template_id=record_template_id, category_id=category_id)
+        session.add(newRecordEntry)
+        session.commit()
+
+        # Call lists method on the formData multiDict, to get a list of tupples of keys and a list of all values corresponding to each unique key.
+        for keyValues in formData.lists():
+            fieldTemplateId = int(keyValues[0])
+            fieldValues = keyValues[1]
+            for fieldValue in fieldValues:
+                # After calling session.commit() on the newRecordEntry, SQLAlchemy automatically reloads the object from the database, allowing access to its assigned primary key.
+                newFieldEntry = Field(value=fieldValue, field_template_id=fieldTemplateId, record_id=newRecordEntry.id)
+                print (fieldTemplateId, fieldValue)
+                session.add(newFieldEntry)
+        session.commit()
         return "yo"
     else:
         catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         recordTemplate = getRecordTemplate(record_template_id)
         fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
-        print fieldTemplatesWithOptions
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
