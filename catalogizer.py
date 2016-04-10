@@ -76,8 +76,9 @@ def newRecord(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     recordTemplate = getRecordTemplate(record_template_id)
-    fieldTemplates = getFieldTemplates(record_template_id)
-    return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplates)
+    fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
+    print fieldTemplatesWithOptions
+    return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
 def newRecordTemplate(catalog_id, category_id):
@@ -141,7 +142,7 @@ def getOptions(field_template_id):
     return session.query(Option).filter_by(field_template_id=field_template_id).order_by(asc(Option.id))
 
 def getFields(record_id):
-    """Returns field labels and values in the form of an array of tupples of the field label and an array of teh field values. E.g. [ ( field label, [field value1, field value2] ) ]"""
+    """Returns field labels and values in the form of an array of tupples of the field label and an array of the field values. E.g. [ ( field label, [field value1, field value2] ) ]"""
     record = getRecord(record_id)
     fieldTemplates = getFieldTemplates(record.record_template_id)
     fields = []
@@ -157,6 +158,7 @@ def getFields(record_id):
     return fields
 
 def getFieldTemplatesWithOptions(record_template_id):
+    """Returns field template kind, label, and if a kind with several values, an option list in the form of an array of tupples of the field kind, field label, and an array of options. E.g. [ ( field template kind, field template label, [option1, option2] ) ]"""
     fieldTemplates = getFieldTemplates(record_template_id)
     fieldsWithOptions = []
 
@@ -166,8 +168,8 @@ def getFieldTemplatesWithOptions(record_template_id):
         options = getOptions(fieldTemplate.id)
         optionList = []
         for option in options:
-            optionList.append(option)
-        fieldsWithOptions.append( (ftLabel, ftKind, optionList) )
+            optionList.append(option.name)
+        fieldsWithOptions.append( (ftKind, ftLabel, optionList) )
 
     return fieldsWithOptions
 
