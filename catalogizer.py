@@ -170,7 +170,7 @@ def getFields(record_id):
 
     for fieldTemplate in fieldTemplates:
         fieldLabel = fieldTemplate.label
-        valueList = session.query(Field).filter_by(field_template_id=fieldTemplate.id).all()
+        valueList = session.query(Field).filter_by(field_template_id=fieldTemplate.id, record_id=record.id).all()
         fieldValues = []
         for v in valueList:
             fieldValues.append(v.value)
