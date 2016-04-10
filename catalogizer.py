@@ -76,7 +76,8 @@ def newRecord(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     recordTemplate = getRecordTemplate(record_template_id)
-    return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate)
+    fieldTemplates = getFieldTemplates(record_template_id)
+    return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplates)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
 def newRecordTemplate(catalog_id, category_id):
@@ -127,9 +128,22 @@ def getRecord(record_id):
 def getRecords(category_id):
     return session.query(Record).filter_by(category_id=category_id).all()
 
+def getRecordTemplate(record_template_id):
+    return session.query(RecordTemplate).filter_by(id=record_template_id).one()
+
+def getTemplates(category_id):
+    return session.query(RecordTemplate).filter_by(category_id=category_id).all()
+
+def getFieldTemplates(record_template_id):
+    return session.query(FieldTemplate).filter_by(record_template_id=record_template_id).order_by(asc(FieldTemplate.id))
+
+def getOptions(field_template_id):
+    return session.query(Option).filter_by(field_template_id=field_template_id).order_by(asc(Option.id))
+
 def getFields(record_id):
+    """Returns field labels and values in the form of an array of tupples of the field label and an array of teh field values. E.g. [ ( field label, [field value1, field value2] ) ]"""
     record = getRecord(record_id)
-    fieldTemplates = session.query(FieldTemplate).filter_by(record_template_id=record.record_template_id).order_by(asc(FieldTemplate.id))
+    fieldTemplates = getFieldTemplates(record.record_template_id)
     fields = []
 
     for fieldTemplate in fieldTemplates:
@@ -142,11 +156,23 @@ def getFields(record_id):
 
     return fields
 
-def getRecordTemplate(record_template_id):
-    return session.query(RecordTemplate).filter_by(id=record_template_id).one()
+def getFieldTemplatesWithOptions(record_template_id):
+    fieldTemplates = getFieldTemplates(record_template_id)
+    fieldsWithOptions = []
 
-def getTemplates(category_id):
-    return session.query(RecordTemplate).filter_by(category_id=category_id).all()
+    for fieldTemplate in fieldTemplates:
+        ftLabel = fieldTemplate.label
+        ftKind = fieldTemplate.kind
+        options = getOptions(fieldTemplate.id)
+        optionList = []
+        for option in options:
+            optionList.append(option)
+        fieldsWithOptions.append( (ftLabel, ftKind, optionList) )
+
+    return fieldsWithOptions
+
+
+
 
 
 

@@ -11,7 +11,45 @@
 </div>
 
 <div>
+	<h2> Record details </h2>
+	{% if fTemplates %}
+		<form action="#" method="post">
+			{% for fTemplate in fTemplates %}
+				{% if fTemplate.kind == "short_text" %}
+					{{fTemplate.label}}:<br>
+					<input type="text">
+					<br>
+				{% endif %}
 
+				{% if fTemplate.kind == "long_text" %}
+					{{fTemplate.label}}:<br>
+					<textarea type="text" maxlength="500" rows="3"></textarea>
+					<br>
+				{% endif %}
+
+				{% if fTemplate.kind == "check_box" %}
+					{{fTemplate.label}}:<br>
+					<input type="checkbox">
+					<br>
+				{% endif %}
+
+				{% if fTemplate.kind == "radio" %}
+					{{fTemplate.label}}:<br>
+					<input type="radio">
+					<br>
+				{% endif %}
+
+				{% if fTemplate.kind == "drop_down" %}
+					{{fTemplate.label}}:<br>
+					<select>
+						<option value="xxx">XXX</option>
+						<option value="xxx">XXX</option>
+					</select>
+					<br>
+				{% endif %}
+			{% endfor %}
+		</form>
+	{% endif %}
 </div>
 
 {% endblock %}
