@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %} Add New Template {% endblock %}
+{% block files %} <script src={{ url_for('static', filename='fieldGen.js') }}></script> {% endblock %}
 {% block content %}
 
 <div>
@@ -11,11 +12,27 @@
 </div>
 
 <div>
-	<h2> Define your template </h2>
 	<form action="#" methond="post">
+		<h2> Name Your Template </h2>
 		New Template Name:
 		<br>
-		<input type="text">
+		<input type="text" name="template-name">
+		<h2> Define Template Fields </h2>
+		Field Label:
+		<br>
+		<input type="text" name="field-label">
+		<br>
+		Field Kind:
+		<br>
+		<select name="field-kind">
+			<option value="short_text"> Short Text </option>
+			<option value="long_text"> Long Text </option>
+			<option value="drop_down"> Drop Down Menu </option>
+			<option value="check_box"> Check Box List </option>
+			<option value="radio"> Radio List </option>
+		</select>
+		<br>
+		<button onclick="helloTest()"> Add another field </button>
 	</form>
 	<br>
 	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
