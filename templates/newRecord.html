@@ -15,35 +15,42 @@
 	{% if fTemplates %}
 		<form action="#" method="post">
 			{% for fTemplate in fTemplates %}
-				{% if fTemplate.kind == "short_text" %}
-					{{fTemplate.label}}:<br>
+				{% if fTemplate[0] == "short_text" %}
+					{{ fTemplate[1] }}:<br>
 					<input type="text">
 					<br>
 				{% endif %}
 
-				{% if fTemplate.kind == "long_text" %}
-					{{fTemplate.label}}:<br>
+				{% if fTemplate[0] == "long_text" %}
+					{{ fTemplate[1] }}:<br>
 					<textarea type="text" maxlength="500" rows="3"></textarea>
 					<br>
 				{% endif %}
 
-				{% if fTemplate.kind == "check_box" %}
-					{{fTemplate.label}}:<br>
-					<input type="checkbox">
+				{% if fTemplate[0] == "check_box" %}
+					{{ fTemplate[1] }}:<br>
+					{% for option in fTemplate[2] %}
+						<input type="checkbox", value={{option}}> {{option}}
+						<br>
+					{% endfor %}
 					<br>
 				{% endif %}
 
-				{% if fTemplate.kind == "radio" %}
-					{{fTemplate.label}}:<br>
-					<input type="radio">
+				{% if fTemplate[0] == "radio" %}
+					{{ fTemplate[1] }}:<br>
+					{% for option in fTemplate[2] %}
+						<input type="radio" value={{option}}> {{option}}
+						<br>
+					{% endfor %}
 					<br>
 				{% endif %}
 
-				{% if fTemplate.kind == "drop_down" %}
-					{{fTemplate.label}}:<br>
+				{% if fTemplate[0] == "drop_down" %}
+					{{ fTemplate[1] }}:<br>
 					<select>
-						<option value="xxx">XXX</option>
-						<option value="xxx">XXX</option>
+						{% for option in fTemplate[2] %}
+							<option value={{option}}> {{option}} </option>
+						{% endfor %}
 					</select>
 					<br>
 				{% endif %}
