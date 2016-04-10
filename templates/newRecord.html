@@ -18,14 +18,14 @@
 				{% if fTemplate[0] == "short_text" %}
 					{{ fTemplate[1] }}:
 					<br>
-					<input type="text">
+					<input type="text" name="showt">
 					<br>
 				{% endif %}
 
 				{% if fTemplate[0] == "long_text" %}
 					{{ fTemplate[1] }}:
 					<br>
-					<textarea type="text" maxlength="500" rows="3"></textarea>
+					<textarea type="text" maxlength="500" rows="3" name="lowng"></textarea>
 					<br>
 				{% endif %}
 
@@ -33,7 +33,7 @@
 					{{ fTemplate[1] }}:
 					<br>
 					{% for option in fTemplate[2] %}
-						<input type="checkbox", value={{option}}> {{option}}
+						<input type="checkbox", value='{{option}}' name="chyek"> {{option}}
 						<br>
 					{% endfor %}
 					<br>
@@ -43,7 +43,7 @@
 					{{ fTemplate[1] }}:
 					<br>
 					{% for option in fTemplate[2] %}
-						<input type="radio" value={{option}}> {{option}}
+						<input type="radio" value="{{option}}" name="raydyo"> {{option}}
 						<br>
 					{% endfor %}
 					<br>
@@ -52,14 +52,15 @@
 				{% if fTemplate[0] == "drop_down" %}
 					{{ fTemplate[1] }}:
 					<br>
-					<select>
+					<select name="dryop dyown">
 						{% for option in fTemplate[2] %}
-							<option value={{option}}> {{option}} </option>
+							<option value="{{option}}"> {{option}} </option>
 						{% endfor %}
 					</select>
 					<br>
 				{% endif %}
 			{% endfor %}
+			<input type="submit">
 		</form>
 		<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
 	{% endif %}
