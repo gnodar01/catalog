@@ -12,7 +12,7 @@
 </div>
 
 <div>
-	<form action="#" methond="post">
+	<form action="#" method="post">
 		<h2> Name Your Template </h2>
 		New Template Name:
 		<br>
@@ -35,6 +35,8 @@
 			<br>
 		</div>
 		<button type="button" id="add-field-button" disabled> Add another field </button>
+		<br>
+		<input type="submit">
 	</form>
 	<br>
 	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
