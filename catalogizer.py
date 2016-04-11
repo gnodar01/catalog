@@ -90,7 +90,6 @@ def newRecord(catalog_id, category_id, record_template_id):
             for fieldValue in fieldValues:
                 # After calling session.commit() on the newRecordEntry, SQLAlchemy automatically reloads the object from the database, allowing access to its assigned primary key.
                 newFieldEntry = Field(value=fieldValue, field_template_id=fieldTemplateId, record_id=newRecordEntry.id)
-                print (fieldTemplateId, fieldValue)
                 session.add(newFieldEntry)
         session.commit()
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
@@ -98,7 +97,7 @@ def newRecord(catalog_id, category_id, record_template_id):
         catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         recordTemplate = getRecordTemplate(record_template_id)
-        fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
+        fieldTemplatesWithOptions = getFormattedFieldTemplatesWithOptions(record_template_id)
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
@@ -108,19 +107,28 @@ def editRecord(catalog_id, category_id, record_id):
     record = getRecord(record_id)
     return render_template('editRecord.html', catalog=catalog, category=category, record=record)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    record = getRecord(record_id)
-    return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
+    if request.method == 'POST':
+        recordToDelete = getRecord(record_id)
+        fieldsToDelete = getFields(record_id)
+        session.delete(recordToDelete)
+        for fieldToDelete in fieldsToDelete:
+            session.delete(fieldToDelete)
+        session.commit()
+        return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        record = getRecord(record_id)
+        return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     record = getRecord(record_id)
-    fields = getFields(record_id)
+    fields = getFormattedFields(record_id)
     return render_template('showRecord.html', catalog=catalog, category=category, record=record, fields=fields)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/', methods=['GET','POST'])
@@ -194,6 +202,9 @@ def getRecord(record_id):
 def getRecords(category_id):
     return session.query(Record).filter_by(category_id=category_id).all()
 
+def getFields(record_id):
+    return session.query(Field).filter_by(record_id=record_id).all()
+
 def getRecordTemplate(record_template_id):
     return session.query(RecordTemplate).filter_by(id=record_template_id).one()
 
@@ -206,7 +217,7 @@ def getFieldTemplates(record_template_id):
 def getOptions(field_template_id):
     return session.query(Option).filter_by(field_template_id=field_template_id).order_by(asc(Option.id))
 
-def getFields(record_id):
+def getFormattedFields(record_id):
     """Returns field labels and values in the form of an array of tupples of the field label and an array of the field values. E.g. [ ( field label, [field value1, field value2] ) ]"""
     record = getRecord(record_id)
     fieldTemplates = getFieldTemplates(record.record_template_id)
@@ -222,7 +233,7 @@ def getFields(record_id):
 
     return fields
 
-def getFieldTemplatesWithOptions(record_template_id):
+def getFormattedFieldTemplatesWithOptions(record_template_id):
     """Returns a list of dictionaries containing field template id, label, kind, and a list of options for that field template."""
     fieldTemplates = getFieldTemplates(record_template_id)
     fieldsWithOptions = []
