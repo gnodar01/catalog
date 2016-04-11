@@ -93,7 +93,7 @@ def newRecord(catalog_id, category_id, record_template_id):
                 print (fieldTemplateId, fieldValue)
                 session.add(newFieldEntry)
         session.commit()
-        return "yo"
+        return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
@@ -101,7 +101,29 @@ def newRecord(catalog_id, category_id, record_template_id):
         fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template', methods=['GET','POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
+def editRecord(catalog_id, category_id, record_id):
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    return render_template('editRecord.html', catalog=catalog, category=category, record=record)
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
+def deleteRecord(catalog_id, category_id, record_id):
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
+def showRecord(catalog_id, category_id, record_id):
+    catalog = getCatalog(catalog_id)
+    category = getCategory(category_id)
+    record = getRecord(record_id)
+    fields = getFields(record_id)
+    return render_template('showRecord.html', catalog=catalog, category=category, record=record, fields=fields)
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/', methods=['GET','POST'])
 def newRecordTemplate(catalog_id, category_id):
     if request.method == 'POST':
         formData = request.form.copy()
@@ -132,34 +154,25 @@ def newRecordTemplate(catalog_id, category_id):
                     session.add(optionEntry)
                     session.commit()
 
-        return "yo"
+        return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         return render_template('recordTemplate.html', catalog=catalog, category=category)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
-def editRecord(catalog_id, category_id, record_id):
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:rtemplate_id>/edit/')
+def editRecordTemplate(catalog_id, category_id, rtemplate_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    record = getRecord(record_id)
-    return render_template('editRecord.html', catalog=catalog, category=category, record=record)
+    rTemplate = getRecordTemplate(rtemplate_id)
+    return render_template('editRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/')
-def deleteRecord(catalog_id, category_id, record_id):
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:rtemplate_id>/edit/')
+def deleteRecordTemplate(catalog_id, category_id, rtemplate_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    record = getRecord(record_id)
-    return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
-
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
-def showRecord(catalog_id, category_id, record_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    record = getRecord(record_id)
-    fields = getFields(record_id)
-    return render_template('showRecord.html', catalog=catalog, category=category, record=record, fields=fields)
-
+    rTemplate = getRecordTemplate(rtemplate_id)
+    return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
 
 # Helper functions to filter through and get database elements
 
