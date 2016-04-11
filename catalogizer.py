@@ -101,11 +101,15 @@ def newRecord(catalog_id, category_id, record_template_id):
         fieldTemplatesWithOptions = getFieldTemplatesWithOptions(record_template_id)
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template', methods=['GET','POST'])
 def newRecordTemplate(catalog_id, category_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    return render_template('recordTemplate.html', catalog=catalog, category=category)
+    if request.method == 'POST':
+        print request.form
+        return "yo"
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        return render_template('recordTemplate.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
 def editRecord(catalog_id, category_id, record_id):
