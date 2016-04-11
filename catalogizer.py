@@ -104,7 +104,34 @@ def newRecord(catalog_id, category_id, record_template_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template', methods=['GET','POST'])
 def newRecordTemplate(catalog_id, category_id):
     if request.method == 'POST':
-        print request.form
+        formData = request.form.copy()
+
+        recordTemplateName = formData.pop('template-name')
+        # print recordTemplateName
+        # print formData
+        recordTemplateEntry = RecordTemplate(name=recordTemplateName, category_id=category_id)
+        session.add(recordTemplateEntry)
+        session.commit()
+
+        for keyValue in formData.lists():
+            # print keyValue
+            groupIdentifier = keyValue[0][0:keyValue[0].find("-")]
+            inputType = keyValue[0][keyValue[0].find("-") + 1:]
+            # print groupIdentifier, inputType, inputValueList
+            if inputType == "field-kind":
+                fieldTemplateLabel = formData.get(groupIdentifier + "-field-label")
+                fieldTemplateKind = formData.get(groupIdentifier + "-field-kind")
+                fieldTemplateOptions = formData.getlist(groupIdentifier + "-option")
+
+                fieldTemplateEntry = FieldTemplate(label=fieldTemplateLabel, kind=fieldTemplateKind, record_template_id=recordTemplateEntry.id)
+                session.add(fieldTemplateEntry)
+                session.commit()
+
+                while len(fieldTemplateOptions) > 0:
+                    optionEntry = Option(name=fieldTemplateOptions.pop(), field_template_id=fieldTemplateEntry.id)
+                    session.add(optionEntry)
+                    session.commit()
+
         return "yo"
     else:
         catalog = getCatalog(catalog_id)
