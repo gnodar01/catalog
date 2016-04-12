@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 app = Flask(__name__)
 
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import (Base, User, Catalog, Category, Record, Field,
                             RecordTemplate, FieldTemplate, Option)
@@ -112,10 +112,14 @@ def deleteRecord(catalog_id, category_id, record_id):
     if request.method == 'POST':
         recordToDelete = getRecord(record_id)
         fieldsToDelete = getFields(record_id)
-        session.delete(recordToDelete)
+
         for fieldToDelete in fieldsToDelete:
             session.delete(fieldToDelete)
+            session.commit()
+
+        session.delete(recordToDelete)
         session.commit()
+
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -137,17 +141,13 @@ def newRecordTemplate(catalog_id, category_id):
         formData = request.form.copy()
 
         recordTemplateName = formData.pop('template-name')
-        # print recordTemplateName
-        # print formData
         recordTemplateEntry = RecordTemplate(name=recordTemplateName, category_id=category_id)
         session.add(recordTemplateEntry)
         session.commit()
 
         for keyValue in formData.lists():
-            # print keyValue
             groupIdentifier = keyValue[0][0:keyValue[0].find("-")]
             inputType = keyValue[0][keyValue[0].find("-") + 1:]
-            # print groupIdentifier, inputType, inputValueList
             if inputType == "field-kind":
                 fieldTemplateLabel = formData.get(groupIdentifier + "-field-label")
                 fieldTemplateKind = formData.get(groupIdentifier + "-field-kind")
@@ -158,7 +158,7 @@ def newRecordTemplate(catalog_id, category_id):
                 session.commit()
 
                 while len(fieldTemplateOptions) > 0:
-                    optionEntry = Option(name=fieldTemplateOptions.pop(), field_template_id=fieldTemplateEntry.id)
+                    optionEntry = Option(name=fieldTemplateOptions.pop(0), field_template_id=fieldTemplateEntry.id)
                     session.add(optionEntry)
                     session.commit()
 
@@ -168,19 +168,37 @@ def newRecordTemplate(catalog_id, category_id):
         category = getCategory(category_id)
         return render_template('recordTemplate.html', catalog=catalog, category=category)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:rtemplate_id>/edit/')
-def editRecordTemplate(catalog_id, category_id, rtemplate_id):
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/')
+def editRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    rTemplate = getRecordTemplate(rtemplate_id)
+    rTemplate = getRecordTemplate(record_template_id)
     return render_template('editRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:rtemplate_id>/edit/')
-def deleteRecordTemplate(catalog_id, category_id, rtemplate_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    rTemplate = getRecordTemplate(rtemplate_id)
-    return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
+def deleteRecordTemplate(catalog_id, category_id, record_template_id):
+    if request.method == 'POST':
+        recordTemplateToDelete = getRecordTemplate(record_template_id)
+        fieldTemplatesToDelete = getFieldTemplates(record_template_id)
+
+        for fieldTemplateToDelete in fieldTemplatesToDelete:
+            optionsToDelete = getOptions(fieldTemplateToDelete.id)
+            for optionToDelete in optionsToDelete:
+                session.delete(optionToDelete)
+                session.commit()
+            session.delete(fieldTemplateToDelete)
+            session.commit()
+
+        session.delete(recordTemplateToDelete)
+        session.commit()
+
+
+        return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        rTemplate = getRecordTemplate(record_template_id)
+        return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
 
 # Helper functions to filter through and get database elements
 
@@ -225,7 +243,7 @@ def getFormattedFields(record_id):
 
     for fieldTemplate in fieldTemplates:
         fieldLabel = fieldTemplate.label
-        valueList = session.query(Field).filter_by(field_template_id=fieldTemplate.id, record_id=record.id).all()
+        valueList = session.query(Field).filter_by(field_template_id=fieldTemplate.id, record_id=record.id).order_by(asc(Field.id))
         fieldValues = []
         for v in valueList:
             fieldValues.append(v.value)
