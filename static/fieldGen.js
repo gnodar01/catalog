@@ -3,37 +3,38 @@ function genOption(num){
 	var fkSelect = document.getElementById(fkSelectId);
 	var currentVal = fkSelect.value;
 	
+	var currentOptionFieldDivs = document.getElementsByClassName(num + "-option-field-div");
+
 	if (currentVal === "drop_down" || currentVal === "check_box" || currentVal === "radio") {
-		var fieldDescriptionDiv = document.getElementById(num + "-field-description");
+		if(currentOptionFieldDivs.length === 0) {
+			var fieldDescriptionDiv = document.getElementById(num + "-field-description");
 
-		var newOptionButton = document.getElementById(num + "-new-option-button");
-		if (newOptionButton == null) {
-			newOptionButton = document.createElement("button");
-			newOptionButton.type = "button";
-			newOptionButton.id = num + "-new-option-button";
-			newOptionButton.innerHTML = "Add option";
-			newOptionButton.onclick = function() { genOption(num) };
+			var newOptionButton = document.getElementById(num + "-new-option-button");
+			if (newOptionButton == null) {
+				newOptionButton = document.createElement("button");
+				newOptionButton.type = "button";
+				newOptionButton.id = num + "-new-option-button";
+				newOptionButton.innerHTML = "Add option";
+				newOptionButton.onclick = function() { genOption(num) };
 
-			fieldDescriptionDiv.appendChild(newOptionButton);
+				fieldDescriptionDiv.appendChild(newOptionButton);
+			}
+
+			var optionFieldDiv = document.createElement("div");
+			optionFieldDiv.className = num + "-option-field-div";
+
+			var optionInput = document.createElement("input");
+			optionInput.name = num + "-option";
+			optionInput.class = num + "-option-input";
+			var optionInputText = document.createTextNode("Option Label:");
+
+			optionFieldDiv.appendChild(optionInputText);
+			optionFieldDiv.appendChild(document.createElement("br"));
+			optionFieldDiv.appendChild(optionInput);
+			optionFieldDiv.appendChild(document.createElement("br"));
+
+			fieldDescriptionDiv.insertBefore(optionFieldDiv, newOptionButton);
 		}
-
-		var optionFieldDiv = document.createElement("div");
-		optionFieldDiv.className = num + "-option-field-div";
-
-		var optionInput = document.createElement("input");
-		optionInput.name = num + "-option";
-		optionInput.class = num + "-option-input";
-		var optionInputText = document.createTextNode("Option Label:");
-
-		optionFieldDiv.appendChild(optionInputText);
-		optionFieldDiv.appendChild(document.createElement("br"));
-		optionFieldDiv.appendChild(optionInput);
-		optionFieldDiv.appendChild(document.createElement("br"));
-
-		fieldDescriptionDiv.insertBefore(optionFieldDiv, newOptionButton);
-
-
-
 	} else {
 		var newOptionButton = document.getElementById(num + "-new-option-button");
 		if (newOptionButton != null) {
