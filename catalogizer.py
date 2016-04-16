@@ -80,7 +80,7 @@ def deleteCategory(catalog_id, category_id):
 def viewRecords(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    records = getRecords(category_id)
+    records = getRecordsByCategoryId(category_id)
     return render_template('viewRecords.html', catalog=catalog, category=category, records=records)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
@@ -188,21 +188,7 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
     if request.method == 'POST':
-        recordTemplateToDelete = getRecordTemplate(record_template_id)
-        fieldTemplatesToDelete = getFieldTemplates(record_template_id)
-
-        for fieldTemplateToDelete in fieldTemplatesToDelete:
-            optionsToDelete = getOptions(fieldTemplateToDelete.id)
-            for optionToDelete in optionsToDelete:
-                session.delete(optionToDelete)
-                session.commit()
-            session.delete(fieldTemplateToDelete)
-            session.commit()
-
-        session.delete(recordTemplateToDelete)
-        session.commit()
-
-
+        delRecord_Template(record_template_id)
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -227,8 +213,11 @@ def getCategory(category_id):
 def getRecord(record_id):
     return session.query(Record).filter_by(id=record_id).one()
 
-def getRecords(category_id):
+def getRecordsByCategoryId(category_id):
     return session.query(Record).filter_by(category_id=category_id).all()
+
+def getRecordsByRecordTemplateId(record_template_id):
+    return session.query(Record).filter_by(record_template_id=record_template_id).all()
 
 def getFields(record_id):
     return session.query(Field).filter_by(record_id=record_id).all()
@@ -294,7 +283,24 @@ def delRecord(record_id):
     session.commit()
 
 
+def delRecord_Template(record_template_id):
+    recordTemplate = getRecordTemplate(record_template_id)
+    fieldTemplates = getFieldTemplates(record_template_id)
+    records = getRecordsByRecordTemplateId(record_template_id)
 
+    for fieldTemplate in fieldTemplates:
+        options = getOptions(fieldTemplate.id)
+        for option in options:
+            session.delete(option)
+            session.commit()
+        session.delete(fieldTemplate)
+        session.commit()
+
+    for record in records:
+        delRecord(record.id)
+
+    session.delete(recordTemplate)
+    session.commit()
 
 
 
