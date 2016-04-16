@@ -36,10 +36,15 @@ def editCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
     return render_template('editCatalog.html', catalog=catalog)
 
-@app.route('/catalog/<int:catalog_id>/delete/')
+@app.route('/catalog/<int:catalog_id>/delete/', methods=['GET','POST'])
 def deleteCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
-    return render_template('deleteCatalog.html', catalog=catalog)
+    if request.method == 'POST':
+        # session.delete(catalog)
+        # session.commit()
+        return redirect(url_for('viewCatalogs'))
+    else:
+        return render_template('deleteCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/category/')
 def viewCategories(catalog_id):
@@ -82,7 +87,7 @@ def viewRecords(catalog_id, category_id):
 def addRecord(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    recordTemplates = getTemplates(category_id)
+    recordTemplates = getRecordTemplates(category_id)
     return render_template('addRecord.html', catalog=catalog, category=category, rTemplates=recordTemplates)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
@@ -124,16 +129,7 @@ def editRecord(catalog_id, category_id, record_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
     if request.method == 'POST':
-        recordToDelete = getRecord(record_id)
-        fieldsToDelete = getFields(record_id)
-
-        for fieldToDelete in fieldsToDelete:
-            session.delete(fieldToDelete)
-            session.commit()
-
-        session.delete(recordToDelete)
-        session.commit()
-
+        delRecord(record_id)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -240,7 +236,7 @@ def getFields(record_id):
 def getRecordTemplate(record_template_id):
     return session.query(RecordTemplate).filter_by(id=record_template_id).one()
 
-def getTemplates(category_id):
+def getRecordTemplates(category_id):
     return session.query(RecordTemplate).filter_by(category_id=category_id).all()
 
 def getFieldTemplates(record_template_id):
@@ -286,14 +282,16 @@ def getFormattedFieldTemplatesWithOptions(record_template_id):
 
     return fieldsWithOptions
 
+# Helper functions to delete database items
 
-
-
-
-
-
-
-
+def delRecord(record_id):
+    record = getRecord(record_id)
+    fields = getFields(record_id)
+    for field in fields:
+        session.delete(field)
+        session.commit()
+    session.delete(record)
+    session.commit()
 
 
 

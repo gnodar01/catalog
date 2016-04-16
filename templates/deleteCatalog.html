@@ -7,7 +7,12 @@
 </div>
 
 <div>
-	<a href={{ url_for('viewCatalogs') }}> Cancel </a>
+	<form action="#" method="post">
+		Are you sure you want to delete {{catalog.name}}?
+		<br>
+		<input type="submit" value="Yes">
+		<a href={{ url_for('viewCatalogs') }}> Cancel </a>
+	</form>
 </div>
 
 {% endblock %}
