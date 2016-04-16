@@ -47,10 +47,17 @@ def viewCategories(catalog_id):
     categories = getCategories(catalog_id)
     return render_template('viewCategories.html', catalog=catalog, categories=categories)
 
-@app.route('/catalog/<int:catalog_id>/category/new')
+@app.route('/catalog/<int:catalog_id>/category/new', methods=['GET','POST'])
 def newCategory(catalog_id):
     catalog = getCatalog(catalog_id)
-    return render_template('newCategory.html', catalog=catalog)
+    if request.method == 'POST':
+        categoryName = request.form['category-name']
+        categoryEntry = Category(name=categoryName, catalog_id=catalog.id)
+        session.add(categoryEntry)
+        session.commit()
+        return redirect(url_for('viewCategories', catalog_id=catalog.id))
+    else:
+        return render_template('newCategory.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
 def editCategory(catalog_id, category_id):
