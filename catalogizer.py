@@ -20,9 +20,16 @@ def viewCatalogs():
     catalogs = getCatalogs()
     return render_template('viewCatalogs.html', catalogs=catalogs)
 
-@app.route('/catalog/new/')
+@app.route('/catalog/new/', methods=['GET','POST'])
 def newCatalog():
-    return render_template('newCatalog.html')
+    if request.method == 'POST':
+        catalogName = request.form['catalog-name']
+        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=1)
+        session.add(newCatalogEntry)
+        session.commit()
+        return redirect(url_for('viewCatalogs'))
+    else:
+        return render_template('newCatalog.html')
 
 @app.route('/catalog/<int:catalog_id>/edit/')
 def editCatalog(catalog_id):
