@@ -48,9 +48,9 @@ function genOption(fdNum){
 }
 
 function genField(fdNum) {
-	var prevFieldDescriptionNum = fdNum - 1;
-	var prevFieldDescriptionId = prevFieldDescriptionNum.toString() + "-field-description";
-	var prevFieldDescription = document.getElementById(prevFieldDescriptionId);
+	// var prevFieldDescriptionNum = fdNum - 1;
+	// var prevFieldDescriptionId = prevFieldDescriptionNum.toString() + "-field-description";
+	// var prevFieldDescription = document.getElementById(prevFieldDescriptionId);
 
 	var fdDiv = document.createElement("div");
 	fdDivNum = fdNum.toString();
@@ -64,6 +64,16 @@ function genField(fdNum) {
 	fdLabel.type = "text";
 	fdLabel.name = fdNum + "-field-label";
 	fdDiv.appendChild(fdLabel);
+
+	var removeFieldDiv = document.createElement("button");
+	removeFieldDiv.type = "button";
+	removeFieldDiv.innerHTML = "Remove field";
+	removeFieldDiv.id = fdNum + "-remove-field-div-btn";
+	removeFieldDiv.onclick = function() {
+		fdDiv.parentNode.removeChild(fdDiv);
+	}
+	fdDiv.appendChild(removeFieldDiv);
+
 	fdDiv.appendChild(document.createElement("br"));
 
 	var fieldKindText = document.createTextNode("Field Kind:");
@@ -104,13 +114,17 @@ function genField(fdNum) {
 	fdSelect.appendChild(fdRadioOption);
 
 	fdDiv.appendChild(fdSelect);
+
 	fdDiv.appendChild(document.createElement("br"));
 
 	var addFieldButton = document.getElementById("add-field-button");
 	var nextFieldDescriptionNum = fdNum + 1;
 	addFieldButton.onclick = function() { genField(nextFieldDescriptionNum); };
 	
-	prevFieldDescription.parentNode.insertBefore(fdDiv, prevFieldDescription.nextSibling);
+	// prevFieldDescription.parentNode.insertBefore(fdDiv, prevFieldDescription.nextSibling);
+
+	var fdContainer = document.getElementById("field-descriptions");
+	fdContainer.appendChild(fdDiv);
 }
 
 window.onload = function() {
