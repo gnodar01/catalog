@@ -40,8 +40,7 @@ def editCatalog(catalog_id):
 def deleteCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
     if request.method == 'POST':
-        # session.delete(catalog)
-        # session.commit()
+        delCatalog(catalog_id)
         return redirect(url_for('viewCatalogs'))
     else:
         return render_template('deleteCatalog.html', catalog=catalog)
@@ -70,11 +69,16 @@ def editCategory(catalog_id, category_id):
     category = getCategory(category_id)
     return render_template('editCategory.html', catalog=catalog, category=category)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/', methods=['GET','POST'])
 def deleteCategory(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
-    return render_template('deleteCategory.html', catalog=catalog, category=category)
+    if request.method == 'POST':
+        delCategory(category_id)
+        return redirect(url_for('viewCategories', catalog_id=catalog_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        return render_template('deleteCategory.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/')
 def viewRecords(catalog_id, category_id):
@@ -302,8 +306,25 @@ def delRecord_Template(record_template_id):
     session.delete(recordTemplate)
     session.commit()
 
+def delCategory(category_id):
+    category = getCategory(category_id)
+    recordTemplates = getRecordTemplates(category_id)
 
+    for recordTemplate in recordTemplates:
+        delRecord_Template(recordTemplate.id)
 
+    session.delete(category)
+    session.commit()
+
+def delCatalog(catalog_id):
+    catalog = getCatalog(catalog_id)
+    categories = getCategories(catalog_id)
+
+    for category in categories:
+        delCategory(category.id)
+
+    session.delete(catalog)
+    session.commit()
 
 
 
