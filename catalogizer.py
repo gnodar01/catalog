@@ -97,24 +97,7 @@ def addRecord(catalog_id, category_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
     if request.method == 'POST':
-        recordTemplate = getRecordTemplate(record_template_id)
-        # The request object is a Werkzeug data structure called ImmutableMultiDict, which has a copy method that returns a mutable Wekzeug MultiDict.
-        formData = request.form.copy()
-        # Pop the first item (the record name) for a list on the dict, and remove the key from the dict.
-        recordName = formData.pop('record-name')
-        newRecordEntry = Record(name=recordName, record_template_id=record_template_id, category_id=category_id)
-        session.add(newRecordEntry)
-        session.commit()
-
-        # Call lists method on the formData multiDict, to get a list of tupples of keys and a list of all values corresponding to each unique key.
-        for keyValues in formData.lists():
-            fieldTemplateId = int(keyValues[0])
-            fieldValues = keyValues[1]
-            for fieldValue in fieldValues:
-                # After calling session.commit() on the newRecordEntry, SQLAlchemy automatically reloads the object from the database, allowing access to its assigned primary key.
-                newFieldEntry = Field(value=fieldValue, field_template_id=fieldTemplateId, record_id=newRecordEntry.id)
-                session.add(newFieldEntry)
-        session.commit()
+        addNewRecord(category_id, record_template_id)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -123,12 +106,19 @@ def newRecord(catalog_id, category_id, record_template_id):
         fieldTemplatesWithOptions = getFormattedFieldTemplatesWithOptions(record_template_id)
         return render_template('newRecord.html', catalog=catalog, category=category, rTemplate=recordTemplate, fTemplates=fieldTemplatesWithOptions)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/', methods=['GET', 'POST'])
 def editRecord(catalog_id, category_id, record_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
     record = getRecord(record_id)
-    return render_template('editRecord.html', catalog=catalog, category=category, record=record)
+    if request.method == 'POST':
+        record_template_id = record.record_template_id
+        delRecord(record_id)
+        addNewRecord(category_id, record_template_id)
+        return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        fieldTemplatesWithValues = getFieldTemplatesWithValues(record_id)
+        return render_template('editRecord.html', catalog=catalog, category=category, record=record, fTemplates=fieldTemplatesWithValues)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
@@ -199,6 +189,28 @@ def deleteRecordTemplate(catalog_id, category_id, record_template_id):
         category = getCategory(category_id)
         rTemplate = getRecordTemplate(record_template_id)
         return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
+
+# Helper functions for adding new entries
+
+def addNewRecord(category_id, record_template_id):
+    recordTemplate = getRecordTemplate(record_template_id)
+    # The request object is a Werkzeug data structure called ImmutableMultiDict, which has a copy method that returns a mutable Wekzeug MultiDict.
+    formData = request.form.copy()
+    # Pop the first item (the record name) for a list on the dict, and remove the key from the dict.
+    recordName = formData.pop('record-name')
+    newRecordEntry = Record(name=recordName, record_template_id=record_template_id, category_id=category_id)
+    session.add(newRecordEntry)
+    session.commit()
+
+    # Call lists method on the formData multiDict, to get a list of tupples of keys and a list of all values corresponding to each unique key.
+    for keyValues in formData.lists():
+        fieldTemplateId = int(keyValues[0])
+        fieldValues = keyValues[1]
+        for fieldValue in fieldValues:
+            # After calling session.commit() on the newRecordEntry, SQLAlchemy automatically reloads the object from the database, allowing access to its assigned primary key.
+            newFieldEntry = Field(value=fieldValue, field_template_id=fieldTemplateId, record_id=newRecordEntry.id)
+            session.add(newFieldEntry)
+    session.commit()
 
 # Helper functions to filter through and get database elements
 
@@ -274,6 +286,21 @@ def getFormattedFieldTemplatesWithOptions(record_template_id):
         fieldsWithOptions.append(fieldTemplateDict)
 
     return fieldsWithOptions
+
+def getFieldTemplatesWithValues(record_id):
+    record = getRecord(record_id)
+    ftDictList = getFormattedFieldTemplatesWithOptions(record.record_template_id)
+
+    for ftDict in ftDictList:
+        ftDict['values'] = []
+        ftId = ftDict['id']
+        fields = session.query(Field).filter_by(field_template_id=ftId).all()
+        for field in fields:
+            value = field.value
+            ftDict['values'].append(value)
+
+    return ftDictList
+
 
 # Helper functions to delete database items
 
