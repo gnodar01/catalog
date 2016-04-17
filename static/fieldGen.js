@@ -73,14 +73,14 @@ function genField(fdNum) {
 	fdLabel.name = fdNum + "-field-label";
 	fdDiv.appendChild(fdLabel);
 
-	var removeFieldDiv = document.createElement("button");
-	removeFieldDiv.type = "button";
-	removeFieldDiv.innerHTML = "Remove field";
-	removeFieldDiv.id = fdNum + "-remove-field-div-btn";
-	removeFieldDiv.onclick = function() {
+	var removeFieldBtn = document.createElement("button");
+	removeFieldBtn.type = "button";
+	removeFieldBtn.innerHTML = "Remove field";
+	removeFieldBtn.id = fdNum + "-remove-field-div-btn";
+	removeFieldBtn.onclick = function() {
 		fdDiv.parentNode.removeChild(fdDiv);
 	}
-	fdDiv.appendChild(removeFieldDiv);
+	fdDiv.appendChild(removeFieldBtn);
 
 	fdDiv.appendChild(document.createElement("br"));
 
