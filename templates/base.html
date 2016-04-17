@@ -2,11 +2,12 @@
 <html lang="en">
 	<head>
 		{% block head %}
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title> 
 				{% block title %} Catalogizer {% endblock %} 
 			</title>
-			<link rel="stylesheet" href="./material.min.css">
-			<script src="./material.min.js"></script>
+			<link rel="stylesheet" href="{{ url_for('static', filename='mdl/material.min.css') }}">
+			<script src="{{ url_for('static', filename='mdl/material.min.js') }}"></script>
 			<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			{% block files %}{% endblock %}
 		{% endblock %}
