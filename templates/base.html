@@ -6,13 +6,29 @@
 			<title> 
 				{% block title %} Catalogizer {% endblock %} 
 			</title>
+			<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 			<link rel="stylesheet" href="{{ url_for('static', filename='mdl/material.min.css') }}">
 			<script src="{{ url_for('static', filename='mdl/material.min.js') }}"></script>
 			<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 			{% block files %}{% endblock %}
 		{% endblock %}
 	</head>
-	<body> 
-		{% block content %}{% endblock %} 
+	<body>
+		<div class="mdl-layout mdl-js-layout">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+					<span class="mdl-layout__title">{% block header %}{% endblock %}</span>
+					<div class="mdl-layout-spacer"></div>
+					<nav class="mdl-navigation">
+						<a class="mdl-navigation__link" href="#">Nav link 1</a>
+						<a class="mdl-navigation__link" href="#">Nav link 2</a>
+					</nav>
+				</div>
+			</header>
+
+			<main class="mdl-layout__content">
+				{% block content %}{% endblock %}
+			</main>
+		</div>
 	</body>
 </html>
