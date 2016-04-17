@@ -15,7 +15,7 @@ function genOption(fdNum){
 	var currentVal = fkSelect.value;
 
 	if (currentVal === "drop_down" || currentVal === "check_box" || currentVal === "radio")  {
-		var fieldDescriptionDiv = document.getElementById(fdNum + "-field-description");
+		var fdDiv = document.getElementById(fdNum + "-field-description");
 
 		var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
 		if (addOptionBtn == null) {
@@ -25,33 +25,41 @@ function genOption(fdNum){
 			addOptionBtn.innerHTML = "Add option";
 			addOptionBtn.onclick = function() { genOption(fdNum) };
 
-			fieldDescriptionDiv.appendChild(addOptionBtn);
+			fdDiv.appendChild(addOptionBtn);
 		}
 
 		var optionFieldDiv = document.createElement("div");
 		optionFieldDiv.className = fdNum + "-option-field-div";
 
+		var optionInputText = document.createTextNode("Option Label:");
+		optionFieldDiv.appendChild(optionInputText);
+
+		optionFieldDiv.appendChild(document.createElement("br"));
+
 		var optionInput = document.createElement("input");
 		optionInput.name = fdNum + "-option";
-		optionInput.class = fdNum + "-option-input";
-		var optionInputText = document.createTextNode("Option Label:");
-
-		optionFieldDiv.appendChild(optionInputText);
-		optionFieldDiv.appendChild(document.createElement("br"));
+		optionInput.className = fdNum + "-option-input";
 		optionFieldDiv.appendChild(optionInput);
-		optionFieldDiv.appendChild(document.createElement("br"));
 
-		fieldDescriptionDiv.insertBefore(optionFieldDiv, addOptionBtn);
+		fdDiv.insertBefore(optionFieldDiv, addOptionBtn);
+
+		var fdOptionInputs = document.getElementsByClassName(fdNum + "-option-input");
+		if (fdOptionInputs.length > 1) {
+			var removeOptionBtn = document.createElement("button");
+			removeOptionBtn.type = "button";
+			removeOptionBtn.innerHTML = "Remove Option";
+			removeOptionBtn.className = fdNum + "-remove-option-btn";
+			removeOptionBtn.onclick = function() {
+				optionFieldDiv.parentNode.removeChild(optionFieldDiv);
+			}
+			optionFieldDiv.appendChild(removeOptionBtn);
+		}
 	} else {
 		delOptions(fdNum);
 	}
 }
 
 function genField(fdNum) {
-	// var prevFieldDescriptionNum = fdNum - 1;
-	// var prevFieldDescriptionId = prevFieldDescriptionNum.toString() + "-field-description";
-	// var prevFieldDescription = document.getElementById(prevFieldDescriptionId);
-
 	var fdDiv = document.createElement("div");
 	fdDivNum = fdNum.toString();
 	fdDiv.id = fdDivNum + "-field-description";
@@ -118,10 +126,8 @@ function genField(fdNum) {
 	fdDiv.appendChild(document.createElement("br"));
 
 	var addFieldButton = document.getElementById("add-field-button");
-	var nextFieldDescriptionNum = fdNum + 1;
-	addFieldButton.onclick = function() { genField(nextFieldDescriptionNum); };
-	
-	// prevFieldDescription.parentNode.insertBefore(fdDiv, prevFieldDescription.nextSibling);
+	var nextFdNum = fdNum + 1;
+	addFieldButton.onclick = function() { genField(nextFdNum); };
 
 	var fdContainer = document.getElementById("field-descriptions");
 	fdContainer.appendChild(fdDiv);
