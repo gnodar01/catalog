@@ -31,10 +31,16 @@ def newCatalog():
     else:
         return render_template('newCatalog.html')
 
-@app.route('/catalog/<int:catalog_id>/edit/')
+@app.route('/catalog/<int:catalog_id>/edit/', methods=['GET','POST'])
 def editCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
-    return render_template('editCatalog.html', catalog=catalog)
+    if request.method == 'POST':
+        newCatalogName = request.form['new-catalog-name']
+        catalog.name = newCatalogName
+        session.commit()
+        return redirect(url_for('viewCatalogs'))
+    else:
+        return render_template('editCatalog.html', catalog=catalog)
 
 @app.route('/catalog/<int:catalog_id>/delete/', methods=['GET','POST'])
 def deleteCatalog(catalog_id):
