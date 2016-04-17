@@ -63,11 +63,17 @@ def newCategory(catalog_id):
     else:
         return render_template('newCategory.html', catalog=catalog)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/', methods=['GET','POST'])
 def editCategory(catalog_id, category_id):
-    catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
-    return render_template('editCategory.html', catalog=catalog, category=category)
+    if request.method == 'POST':
+        newCategoryName = request.form['new-category-name']
+        category.name = newCategoryName
+        session.commit()
+        return redirect(url_for('viewCategories', catalog_id=catalog_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        return render_template('editCategory.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/', methods=['GET','POST'])
 def deleteCategory(catalog_id, category_id):
@@ -176,8 +182,8 @@ def newRecordTemplate(catalog_id, category_id):
 def editRecordTemplate(catalog_id, category_id, record_template_id):
     rTemplate = getRecordTemplate(record_template_id)
     if request.method == 'POST':
-        newName = request.form['new-rt-name']
-        rTemplate.name = newName
+        newRecordTemplateName = request.form['new-rt-name']
+        rTemplate.name = newRecordTemplateName
         session.commit()
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
