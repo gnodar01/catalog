@@ -54,6 +54,7 @@ class FieldTemplate(Base):
                         'check_box',
                         'radio'),
                         nullable=False)
+    order = Column(Integer, nullable=False)
     record_template_id = Column(Integer, ForeignKey('record_template.id'))
     record_template = relationship("RecordTemplate",
                                     back_populates='template_fields')

@@ -167,7 +167,7 @@ def newRecordTemplate(catalog_id, category_id):
                 fieldTemplateKind = formData.get(groupIdentifier + "-field-kind")
                 fieldTemplateOptions = formData.getlist(groupIdentifier + "-option")
 
-                fieldTemplateEntry = FieldTemplate(label=fieldTemplateLabel, kind=fieldTemplateKind, record_template_id=recordTemplateEntry.id)
+                fieldTemplateEntry = FieldTemplate(label=fieldTemplateLabel, kind=fieldTemplateKind, order=groupIdentifier, record_template_id=recordTemplateEntry.id)
                 session.add(fieldTemplateEntry)
                 session.commit()
 
@@ -233,7 +233,7 @@ def getRecordTemplates(category_id):
     return session.query(RecordTemplate).filter_by(category_id=category_id).all()
 
 def getFieldTemplates(record_template_id):
-    return session.query(FieldTemplate).filter_by(record_template_id=record_template_id).order_by(asc(FieldTemplate.id))
+    return session.query(FieldTemplate).filter_by(record_template_id=record_template_id).order_by(asc(FieldTemplate.order))
 
 def getOptions(field_template_id):
     return session.query(Option).filter_by(field_template_id=field_template_id).order_by(asc(Option.id))
