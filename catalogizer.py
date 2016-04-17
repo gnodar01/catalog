@@ -172,12 +172,18 @@ def newRecordTemplate(catalog_id, category_id):
         category = getCategory(category_id)
         return render_template('recordTemplate.html', catalog=catalog, category=category)
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/', methods=['GET', 'POST'])
 def editRecordTemplate(catalog_id, category_id, record_template_id):
-    catalog = getCatalog(catalog_id)
-    category = getCategory(category_id)
     rTemplate = getRecordTemplate(record_template_id)
-    return render_template('editRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
+    if request.method == 'POST':
+        newName = request.form['new-rt-name']
+        rTemplate.name = newName
+        session.commit()
+        return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
+    else:
+        catalog = getCatalog(catalog_id)
+        category = getCategory(category_id)
+        return render_template('editRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
@@ -193,7 +199,6 @@ def deleteRecordTemplate(catalog_id, category_id, record_template_id):
 # Helper functions for adding new entries
 
 def addNewRecord(category_id, record_template_id):
-    recordTemplate = getRecordTemplate(record_template_id)
     # The request object is a Werkzeug data structure called ImmutableMultiDict, which has a copy method that returns a mutable Wekzeug MultiDict.
     formData = request.form.copy()
     # Pop the first item (the record name) for a list on the dict, and remove the key from the dict.
