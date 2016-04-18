@@ -39,6 +39,7 @@ def editCatalog(catalog_id):
         newCatalogName = request.form['new-catalog-name']
         catalog.name = newCatalogName
         session.commit()
+        flash('%s successfully edited!' % newCatalogName)
         return redirect(url_for('viewCatalogs'))
     else:
         return render_template('editCatalog.html', catalog=catalog)
@@ -66,6 +67,7 @@ def newCategory(catalog_id):
         categoryEntry = Category(name=categoryName, catalog_id=catalog.id)
         session.add(categoryEntry)
         session.commit()
+        flash('%s successfully created!' % categoryName)
         return redirect(url_for('viewCategories', catalog_id=catalog.id))
     else:
         return render_template('newCategory.html', catalog=catalog)
@@ -77,6 +79,7 @@ def editCategory(catalog_id, category_id):
         newCategoryName = request.form['new-category-name']
         category.name = newCategoryName
         session.commit()
+        flash('%s successfully edited!' % newCategoryName)
         return redirect(url_for('viewCategories', catalog_id=catalog_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -110,7 +113,9 @@ def addRecord(catalog_id, category_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
     if request.method == 'POST':
+        recordName = request.form['record-name']
         addNewRecord(category_id, record_template_id)
+        flash('%s successfully created!' % recordName)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -123,9 +128,11 @@ def newRecord(catalog_id, category_id, record_template_id):
 def editRecord(catalog_id, category_id, record_id):
     record = getRecord(record_id)
     if request.method == 'POST':
+        newName = request.form['record-name']
         record_template_id = record.record_template_id
         delRecord(record_id)
         addNewRecord(category_id, record_template_id)
+        flash('%s successfully edited!' % newName)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -136,6 +143,8 @@ def editRecord(catalog_id, category_id, record_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
     if request.method == 'POST':
+        record = getRecord(record_id)
+        flash('%s successfully deleted!' % record.name)
         delRecord(record_id)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
@@ -179,6 +188,7 @@ def newRecordTemplate(catalog_id, category_id):
                     session.add(optionEntry)
                     session.commit()
 
+        flash('%s successfully created!' % recordTemplateName)
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -192,6 +202,7 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
         newRecordTemplateName = request.form['new-rt-name']
         rTemplate.name = newRecordTemplateName
         session.commit()
+        flash('%s successfully edited!' % newRecordTemplateName)
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
         catalog = getCatalog(catalog_id)
@@ -337,6 +348,8 @@ def delRecord_Template(record_template_id):
     fieldTemplates = getFieldTemplates(record_template_id)
     records = getRecordsByRecordTemplateId(record_template_id)
 
+    flash('%s successfully deleted!' % recordTemplate.name)
+
     for fieldTemplate in fieldTemplates:
         options = getOptions(fieldTemplate.id)
         for option in options:
@@ -355,6 +368,8 @@ def delCategory(category_id):
     category = getCategory(category_id)
     recordTemplates = getRecordTemplates(category_id)
 
+    flash('%s successfully deleted!' % category.name)
+
     for recordTemplate in recordTemplates:
         delRecord_Template(recordTemplate.id)
 
@@ -364,6 +379,8 @@ def delCategory(category_id):
 def delCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
     categories = getCategories(catalog_id)
+
+    flash('%s successfully deleted!' % catalog.name)
 
     for category in categories:
         delCategory(category.id)
