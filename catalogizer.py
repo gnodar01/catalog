@@ -27,6 +27,7 @@ def newCatalog():
         newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=1)
         session.add(newCatalogEntry)
         session.commit()
+        flash('%s successfully created!' % catalogName)
         return redirect(url_for('viewCatalogs'))
     else:
         return render_template('newCatalog.html')
