@@ -17,12 +17,14 @@
 	{% if rTemplates %}
 		<h2> Your templates </h2>
 		{% for rTemplate in rTemplates %}
-			<li> 
-				<a href={{ url_for('newRecord', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> {{rTemplate.name}} </a>
-				<br>
-				<a href={{ url_for('editRecordTemplate', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> Edit </a>
-				<a href={{ url_for('deleteRecordTemplate', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> Delete </a>
-			</li>
+			<ul>
+				<li> 
+					<a href={{ url_for('newRecord', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> {{rTemplate.name}} </a>
+					<br>
+					<a href={{ url_for('editRecordTemplate', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> Edit </a>
+					<a href={{ url_for('deleteRecordTemplate', catalog_id=catalog.id, category_id=category.id, record_template_id=rTemplate.id) }}> Delete </a>
+				</li>
+			</ul>
 		{% endfor %}
 	{% endif %}
 </div>
