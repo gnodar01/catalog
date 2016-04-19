@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% block title %} Categories {% endblock %}
-{% block header %}  {% endblock %}
+{% block header %} {{catalog.name}} - Categories {% endblock %}
 {% block content %}
 
 <div>
-	<h1>{{catalog.name}} - Categories</h1>
-</div>
-
-<div>
-	<a href={{ url_for('viewCatalogs') }}> Back to Catalogs </a>
-	<br>
-	<a href={{ url_for('newCategory', catalog_id=catalog.id) }}> Create New Category </a>
+	<a href={{ url_for('viewCatalogs') }} class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"> Back to Catalogs </a>
+	<br><br>
+	<a href={{ url_for('newCategory', catalog_id=catalog.id) }} class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"> Create New Category </a>
 </div>
 
 <div>
@@ -18,11 +14,10 @@
 		<h2>Categories</h2>
 		<ul>
 			{% for category in categories %}
-				<li>
-					<a href={{ url_for('viewRecords', catalog_id=catalog.id, category_id=category.id) }}> {{ category.name }} </a>
-					<br>
-					<a href={{ url_for('editCategory', catalog_id=catalog.id, category_id=category.id) }}>Edit</a>
-					<a href={{ url_for('deleteCategory', catalog_id=catalog.id, category_id=category.id) }}>Delete</a>
+				<li class="mdl-list">
+					<a href={{ url_for('viewRecords', catalog_id=catalog.id, category_id=category.id) }} class="mdl-button mdl-js-button mdl-button--primary"> {{ category.name }} </a>
+					<a href={{ url_for('editCategory', catalog_id=catalog.id, category_id=category.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> edit </i> </a>
+					<a href={{ url_for('deleteCategory', catalog_id=catalog.id, category_id=category.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> delete </i> </a>
 				</li>
 			{% endfor %}
 		</ul>
