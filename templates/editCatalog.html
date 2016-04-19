@@ -9,12 +9,13 @@
 
 <div>
 	<form action="#" method="post">
-		New Catalog Name:
-		<br>
-		<input type="text" name="new-catalog-name">
-		<br>
-		<input type="submit">
-		<a href={{ url_for('viewCatalogs') }}> Cancel </a>
+		<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			<label class="mdl-textfield__label" for="new-catalog-name"> New Catalog Name </label>
+			<input type="text" name="new-catalog-name" class="mdl-textfield__input" id="new-catalog-name">
+			<br>
+		</div>
+		<button type="submit" class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> done </i> </button>
+		<a href={{ url_for('viewCatalogs') }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> clear </i> </a>
 	</form>
 </div>
 
