@@ -310,7 +310,7 @@ def getFormattedFieldTemplatesWithOptions(record_template_id):
 
         options = getOptions(fieldTemplate.id)
         for option in options:
-            fieldTemplateDict['options'].append(option.name)
+            fieldTemplateDict['options'].append( (option.name, option.id) )
 
         fieldsWithOptions.append(fieldTemplateDict)
 
