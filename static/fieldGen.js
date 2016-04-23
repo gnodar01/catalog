@@ -1,5 +1,3 @@
-// Material Design Lite will automatically register and render all elements marked with MDL classes upon page load. However in the case where you are creating DOM elements dynamically you need to register new elements using the upgradeElement function. 
-
 function delOptions(fdNum) {
 	var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
 	if (addOptionBtn != null) {
@@ -71,10 +69,6 @@ function genField(fdNum) {
 	var styledFieldLabelContainer = document.createElement("div");
 	styledFieldLabelContainer.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
 
-	// var fieldLabelText = document.createTextNode("Field Label:");
-	// fdDiv.appendChild(fieldLabelText);
-	// fdDiv.appendChild(document.createElement("br"));
-
 	var fdLabelSubtitle = document.createElement("label");
 	fdLabelSubtitle.htmlFor = fdNum + "-field-label";
 	fdLabelSubtitle.className = "mdl-textfield__label";
@@ -88,20 +82,26 @@ function genField(fdNum) {
 	fdLabelInput.className = "mdl-textfield__input";
 	styledFieldLabelContainer.appendChild(fdLabelInput);
 
-	var removeFieldBtn = document.createElement("button");
-	removeFieldBtn.type = "button";
-	removeFieldBtn.innerHTML = "Remove field";
-	removeFieldBtn.id = fdNum + "-remove-field-div-btn";
-	removeFieldBtn.onclick = function() {
-		fdDiv.parentNode.removeChild(fdDiv);
-	}
-	styledFieldLabelContainer.appendChild(removeFieldBtn);
-
-	// componentHandler.upgradeElement(fdLabelInput);
-	// componentHandler.upgradeElement(fdLabelSubtitle);
+	// Material Design Lite will automatically register and render all elements marked with MDL classes upon page load.
+	// However in the case where you are creating DOM elements dynamically you need to register new elements using the upgradeElement function. 
 	componentHandler.upgradeElement(styledFieldLabelContainer);
 
 	fdDiv.appendChild(styledFieldLabelContainer);
+
+	var removeFieldBtn = document.createElement("button");
+	removeFieldBtn.type = "button";
+	removeFieldBtn.id = fdNum + "-remove-field-div-btn";
+	removeFieldBtn.className = "mdl-button mdl-js-button mdl-button--icon";
+	removeFieldBtn.onclick = function() {
+		fdDiv.parentNode.removeChild(fdDiv);
+	}
+
+	var removeFieldIcon = document.createElement("i");
+	removeFieldIcon.className = "material-icons";
+	removeFieldIcon.innerHTML = "remove";
+	removeFieldBtn.appendChild(removeFieldIcon);
+
+	fdDiv.appendChild(removeFieldBtn);
 
 	fdDiv.appendChild(document.createElement("br"));
 
