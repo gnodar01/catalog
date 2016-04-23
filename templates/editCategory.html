@@ -1,22 +1,17 @@
 {% extends "base.html" %}
 {% block title %} Edit Category {% endblock %}
-{% block header %}  {% endblock %}
+{% block header %} {{catalog.name}} - Rename {{category.name}} {% endblock %}
 {% block content %}
 
 <div>
-	<h1> Rename {{catalog.name}}'s {{category.name}} </h1>
-</div>
-
-<div>
 	<form action="#" method="post">
-		New Category Name:
-		<br>
-		<input type="text" name="new-category-name">
-		<br>
-		<input type="submit">
-		<a href={{ url_for('viewCategories', catalog_id=catalog.id) }}> Cancel </a>
+		<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			<label for="new-category-name" class="mdl-textfield__label"> New Category Name </label>
+			<input type="text" name="new-category-name" id="new-category-name" class="mdl-textfield__input">
+		</div>
+		<button type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent"> <i class="material-icons"> done </i> </button>
+		<a href={{ url_for('viewCategories', catalog_id=catalog.id) }} class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"> <i class="material-icons"> clear </i> </a>
 	</form>
 </div>
-
 
 {% endblock %}
