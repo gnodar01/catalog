@@ -97,8 +97,8 @@ function genField(fdNum) {
 	}
 	styledFieldLabelContainer.appendChild(removeFieldBtn);
 
-	componentHandler.upgradeElement(fdLabelInput);
-	componentHandler.upgradeElement(fdLabelSubtitle);
+	// componentHandler.upgradeElement(fdLabelInput);
+	// componentHandler.upgradeElement(fdLabelSubtitle);
 	componentHandler.upgradeElement(styledFieldLabelContainer);
 
 	fdDiv.appendChild(styledFieldLabelContainer);
