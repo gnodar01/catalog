@@ -14,7 +14,7 @@
 			{% for catalog in catalogs %}
 				<li class="mdl-list">
 					<a href={{ url_for('viewCategories', catalog_id=catalog.id )}} class="mdl-button mdl-js-button mdl-button--primary"> {{ catalog.name }} </a>
-					<a href={{ url_for('editCatalog', catalog_id=catalog.id )}} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> edit </i> </a>
+					<a href={{ url_for('editCatalog', catalog_id=catalog.id )}} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> mode_edit </i> </a>
 					<a href={{ url_for('deleteCatalog', catalog_id=catalog.id )}} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> delete </i> </a>
 				</li>
 
