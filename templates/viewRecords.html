@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% block title %} Records {% endblock %}
-{% block header %}  {% endblock %}
+{% block header %} {{catalog.name}} - {{category.name}}: Records {% endblock %}
 {% block content %}
 
 <div>
-	<h1>{{catalog.name}} - {{category.name}} Records</h1>
-</div>
-
-<div>
-	<a href={{ url_for('viewCategories', catalog_id=catalog.id) }}> Back to {{catalog.name}} </a>
-	<br>
-	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Add Record </a>
+	<a href={{ url_for('viewCategories', catalog_id=catalog.id) }} class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"> Back to {{catalog.name}} </a>
+	<br><br>
+	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }} class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"> Add Record </a>
 </div>
 
 <div>
@@ -18,17 +14,14 @@
 		<h2>Records</h2>
 		<ul>
 			{% for record in records %}
-				<li>
-					<a href={{ url_for('showRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }}> {{ record.name }} </a>
-					<br>
-					<a href={{ url_for('editRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }}>Edit</a>
-					<a href={{ url_for('deleteRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }}>Delete</a>
+				<li class="mdl-list">
+					<a href={{ url_for('showRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--primary"> {{ record.name }} </a>
+					<a href={{ url_for('editRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> mode_edit </i> </a>
+					<a href={{ url_for('deleteRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> delete </i> </a>
 				</li>
 			{% endfor %}
 		</ul>
 	{% endif %}
 </div>
-
-
 
 {% endblock %}

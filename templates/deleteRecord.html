@@ -1,16 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Delete Record {% endblock %}
-{% block header %}  {% endblock %}
+{% block header %} {{catalog.name}} - {{category.name}}: Delete {{record.name}} {% endblock %}
 {% block content %}
 
 <div>
-	<h1> Delete {{catalog.name}} - {{category.name}}'s {{record.name}}? </h1>
-</div>
-
-<div>
 	<form action="#" method="POST">
-		<input type="submit" value="Yes">
-		<a href={{ url_for('viewRecords', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
+		Are you sure you want to delete {{record.name}}?
+		<button type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent"> <i class="material-icons"> done </i> </button>
+		<a href={{ url_for('viewRecords', catalog_id=catalog.id, category_id=category.id) }} class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"> <i class="material-icons"> clear </i> </a>
 	</form>
 </div>
 
