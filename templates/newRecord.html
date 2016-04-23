@@ -36,7 +36,7 @@
 			{% if fTemplate['kind'] == "check_box" %}
 				{{ fTemplate['label'] }}:
 				<br>
-				{% for option in fTemplate['options'] %}
+				{% for option, optionId in fTemplate['options'] %}
 					<input type="checkbox", value="{{option}}" name="{{ fTemplate['id'] }}"> {{option}}
 					<br>
 				{% endfor %}
@@ -46,7 +46,7 @@
 			{% if fTemplate['kind'] == "radio" %}
 				{{ fTemplate['label'] }}:
 				<br>
-				{% for option in fTemplate['options'] %}
+				{% for option, optionId in fTemplate['options'] %}
 					<input type="radio" value="{{option}}" name="{{ fTemplate['id'] }}"> {{option}}
 					<br>
 				{% endfor %}
@@ -57,16 +57,18 @@
 				{{ fTemplate['label'] }}:
 				<br>
 				<select name="{{ fTemplate['id'] }}">
-					{% for option in fTemplate['options'] %}
+					{% for option, optionId in fTemplate['options'] %}
 						<option value="{{option}}"> {{option}} </option>
 					{% endfor %}
 				</select>
 				<br>
 			{% endif %}
 		{% endfor %}
+
+		<br>
 		<input type="submit">
+		<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
 	</form>
-	<a href={{ url_for('addRecord', catalog_id=catalog.id, category_id=category.id) }}> Cancel </a>
 </div>
 
 {% endblock %}
