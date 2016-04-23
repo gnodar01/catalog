@@ -62,18 +62,31 @@ function genOption(fdNum){
 }
 
 function genField(fdNum) {
+	console.dir(componentHandler)
+
 	var fdDiv = document.createElement("div");
 	fdDivNum = fdNum.toString();
 	fdDiv.id = fdDivNum + "-field-description";
 
-	var fieldLabelText = document.createTextNode("Field Label:");
-	fdDiv.appendChild(fieldLabelText);
-	fdDiv.appendChild(document.createElement("br"));
+	var styledFieldLabelContainer = document.createElement("div");
+	styledFieldLabelContainer.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
 
-	var fdLabel = document.createElement("input");
-	fdLabel.type = "text";
-	fdLabel.name = fdNum + "-field-label";
-	fdDiv.appendChild(fdLabel);
+	// var fieldLabelText = document.createTextNode("Field Label:");
+	// fdDiv.appendChild(fieldLabelText);
+	// fdDiv.appendChild(document.createElement("br"));
+
+	var fdLabelSubtitle = document.createElement("label");
+	fdLabelSubtitle.htmlFor = fdNum + "-field-label";
+	fdLabelSubtitle.className = "mdl-textfield__label";
+	fdLabelSubtitle.innerHTML = "Field Label";
+	styledFieldLabelContainer.appendChild(fdLabelSubtitle);
+
+	var fdLabelInput = document.createElement("input");
+	fdLabelInput.type = "text";
+	fdLabelInput.name = fdNum + "-field-label";
+	fdLabelInput.id = fdNum + "-field-label";
+	fdLabelInput.className = "mdl-textfield__input";
+	styledFieldLabelContainer.appendChild(fdLabelInput);
 
 	var removeFieldBtn = document.createElement("button");
 	removeFieldBtn.type = "button";
@@ -82,7 +95,13 @@ function genField(fdNum) {
 	removeFieldBtn.onclick = function() {
 		fdDiv.parentNode.removeChild(fdDiv);
 	}
-	fdDiv.appendChild(removeFieldBtn);
+	styledFieldLabelContainer.appendChild(removeFieldBtn);
+
+	componentHandler.upgradeElement(fdLabelInput);
+	componentHandler.upgradeElement(fdLabelSubtitle);
+	componentHandler.upgradeElement(styledFieldLabelContainer);
+
+	fdDiv.appendChild(styledFieldLabelContainer);
 
 	fdDiv.appendChild(document.createElement("br"));
 
