@@ -19,19 +19,6 @@ function genOption(fdNum){
 	if (currentVal === "drop_down" || currentVal === "check_box" || currentVal === "radio")  {
 		optionCounter += 1;
 
-		var fdDiv = document.getElementById(fdNum + "-field-description");
-
-		var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
-		if (addOptionBtn == null) {
-			addOptionBtn = document.createElement("button");
-			addOptionBtn.type = "button";
-			addOptionBtn.id = fdNum + "-add-option-btn";
-			addOptionBtn.innerHTML = "Add option";
-			addOptionBtn.onclick = function() { genOption(fdNum) };
-
-			fdDiv.appendChild(addOptionBtn);
-		}
-
 		var optionFieldDiv = document.createElement("div");
 		optionFieldDiv.className = fdNum + "-option-field-div";
 
@@ -53,8 +40,25 @@ function genOption(fdNum){
 		// Material Design Lite will automatically register and render all elements marked with MDL classes upon page load.
 		// However in the case where you are creating DOM elements dynamically you need to register new elements using the upgradeElement function. 
 		componentHandler.upgradeElement(styledOptionLabelContainer);
-
 		optionFieldDiv.appendChild(styledOptionLabelContainer);
+
+		var fdDiv = document.getElementById(fdNum + "-field-description");
+
+		var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
+		if (addOptionBtn == null) {
+			addOptionBtn = document.createElement("button");
+			addOptionBtn.type = "button";
+			addOptionBtn.id = fdNum + "-add-option-btn";
+			addOptionBtn.className = "mdl-button mdl-js-button mdl-button--icon";
+			addOptionBtn.onclick = function() { genOption(fdNum) };
+
+			addOptionIcon = document.createElement("i");
+			addOptionIcon.className = "material-icons";
+			addOptionIcon.innerHTML = "add_circle_outline";
+			addOptionBtn.appendChild(addOptionIcon);
+
+			fdDiv.appendChild(addOptionBtn);
+		}
 
 		fdDiv.insertBefore(optionFieldDiv, addOptionBtn);
 
@@ -74,8 +78,6 @@ function genOption(fdNum){
 
 			optionFieldDiv.appendChild(removeOptionBtn);
 		}
-
-		optionFieldDiv.appendChild(document.createElement("br"));
 	} else {
 		delOptions(fdNum);
 	}
