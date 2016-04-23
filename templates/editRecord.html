@@ -35,9 +35,11 @@
 				{% for option, optionId in fTemplate['options'] %}
 					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{optionId}}">
 						{% if option in fTemplate['values'] %}
-							<input type="checkbox", value="{{option}}" name="{{ fTemplate['id'] }}" class="mdl-checkbox__input" id="checkbox-{{optionId}}" checked>  <span class="mdl-checkbox__label"> {{option}} </span>
+							<input type="checkbox", value="{{option}}" name="{{ fTemplate['id'] }}" class="mdl-checkbox__input" id="checkbox-{{optionId}}" checked>
+							<span class="mdl-checkbox__label"> {{option}} </span>
 						{% else %}
-							<input type="checkbox", value="{{option}}" name="{{ fTemplate['id'] }}" class="mdl-checkbox__input" id="checkbox-{{optionId}}"> <span class="mdl-checkbox__label"> {{option}} </span>
+							<input type="checkbox", value="{{option}}" name="{{ fTemplate['id'] }}" class="mdl-checkbox__input" id="checkbox-{{optionId}}">
+							<span class="mdl-checkbox__label"> {{option}} </span>
 						{% endif %}
 					</label>
 					<br>
@@ -51,9 +53,11 @@
 				{% for option, optionId in fTemplate['options'] %}
 					<label for="radio-{{optionId}}" class="mdl-radio mdl-js-radio">
 						{% if option in fTemplate['values'] %}
-							<input type="radio", value="{{option}}" name="{{ fTemplate['id'] }}" id="radio-{{optionId}}" class="mdl-radio__button" checked> <span class="mdl-radio__label"> {{option}} </span>
+							<input type="radio", value="{{option}}" name="{{ fTemplate['id'] }}" id="radio-{{optionId}}" class="mdl-radio__button" checked>
+							<span class="mdl-radio__label"> {{option}} </span>
 						{% else %}
-							<input type="radio", value="{{option}}" name="{{ fTemplate['id'] }}" id="radio-{{optionId}}" class="mdl-radio__button"> <span class="mdl-radio__label"> {{option}} </span>
+							<input type="radio", value="{{option}}" name="{{ fTemplate['id'] }}" id="radio-{{optionId}}" class="mdl-radio__button">
+							<span class="mdl-radio__label"> {{option}} </span>
 						{% endif %}
 					</label>
 					<br>
