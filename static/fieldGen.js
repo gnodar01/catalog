@@ -1,3 +1,5 @@
+optionCounter = 0;
+
 function delOptions(fdNum) {
 	var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
 	if (addOptionBtn != null) {
@@ -15,6 +17,8 @@ function genOption(fdNum){
 	var currentVal = fkSelect.value;
 
 	if (currentVal === "drop_down" || currentVal === "check_box" || currentVal === "radio")  {
+		optionCounter += 1;
+
 		var fdDiv = document.getElementById(fdNum + "-field-description");
 
 		var addOptionBtn = document.getElementById(fdNum + "-add-option-btn");
@@ -31,15 +35,26 @@ function genOption(fdNum){
 		var optionFieldDiv = document.createElement("div");
 		optionFieldDiv.className = fdNum + "-option-field-div";
 
-		var optionInputText = document.createTextNode("Option Label:");
-		optionFieldDiv.appendChild(optionInputText);
+		var styledOptionLabelContainer = document.createElement("div");
+		styledOptionLabelContainer.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
 
-		optionFieldDiv.appendChild(document.createElement("br"));
+		var optionLabelSubtitle = document.createElement("label");
+		optionLabelSubtitle.htmlFor = optionCounter + "-option-input";
+		optionLabelSubtitle.className = "mdl-textfield__label";
+		optionLabelSubtitle.innerHTML = "Option Label";
+		styledOptionLabelContainer.appendChild(optionLabelSubtitle);
 
 		var optionInput = document.createElement("input");
 		optionInput.name = fdNum + "-option";
-		optionInput.className = fdNum + "-option-input";
-		optionFieldDiv.appendChild(optionInput);
+		optionInput.id = optionCounter + "-option-input";
+		optionInput.className = fdNum + "-option-input mdl-textfield__input";
+		styledOptionLabelContainer.appendChild(optionInput);
+
+		// Material Design Lite will automatically register and render all elements marked with MDL classes upon page load.
+		// However in the case where you are creating DOM elements dynamically you need to register new elements using the upgradeElement function. 
+		componentHandler.upgradeElement(styledOptionLabelContainer);
+
+		optionFieldDiv.appendChild(styledOptionLabelContainer);
 
 		fdDiv.insertBefore(optionFieldDiv, addOptionBtn);
 
@@ -47,21 +62,26 @@ function genOption(fdNum){
 		if (fdOptionInputs.length > 1) {
 			var removeOptionBtn = document.createElement("button");
 			removeOptionBtn.type = "button";
-			removeOptionBtn.innerHTML = "Remove Option";
-			removeOptionBtn.className = fdNum + "-remove-option-btn";
+			removeOptionBtn.className = fdNum + "-remove-option-btn mdl-button mdl-js-button mdl-button--icon";
 			removeOptionBtn.onclick = function() {
 				optionFieldDiv.parentNode.removeChild(optionFieldDiv);
 			}
+
+			var removeOptionIcon = document.createElement("i");
+			removeOptionIcon.className = "material-icons";
+			removeOptionIcon.innerHTML = "remove";
+			removeOptionBtn.appendChild(removeOptionIcon);
+
 			optionFieldDiv.appendChild(removeOptionBtn);
 		}
+
+		optionFieldDiv.appendChild(document.createElement("br"));
 	} else {
 		delOptions(fdNum);
 	}
 }
 
 function genField(fdNum) {
-	console.dir(componentHandler)
-
 	var fdDiv = document.createElement("div");
 	fdDivNum = fdNum.toString();
 	fdDiv.id = fdDivNum + "-field-description";
