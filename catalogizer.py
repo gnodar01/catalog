@@ -68,7 +68,6 @@ def gconnect():
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(json.dumps("Token's client ID does not match app's"), 401)
-        print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -117,6 +116,7 @@ def gconnect():
                ';-moz-border-radius: 150px;"> ')
 
     flash("Now logged in as %s" % login_session['username'])
+    print login_session
     return output    
 
 # DISCONNECT - Revoke a current user's token and reset their login_session.
@@ -128,7 +128,7 @@ def gdisconnect():
         response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-        
+
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
@@ -156,6 +156,9 @@ def viewCatalogs():
 
 @app.route('/catalog/new/', methods=['GET','POST'])
 def newCatalog():
+    if 'user_id' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
         catalogName = request.form['catalog-name']
         newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=1)
@@ -195,6 +198,9 @@ def viewCategories(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/category/new', methods=['GET','POST'])
 def newCategory(catalog_id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+
     catalog = getCatalog(catalog_id)
     if request.method == 'POST':
         categoryName = request.form['category-name']
@@ -239,6 +245,9 @@ def viewRecords(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     recordTemplates = getRecordTemplates(category_id)
@@ -246,6 +255,9 @@ def addRecord(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+
     if request.method == 'POST':
         recordName = request.form['record-name']
         addNewRecord(category_id, record_template_id)
@@ -297,6 +309,9 @@ def showRecord(catalog_id, category_id, record_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/', methods=['GET','POST'])
 def newRecordTemplate(catalog_id, category_id):
+    if 'user_id' not in login_session:
+        return redirect('/login')
+        
     if request.method == 'POST':
         formData = request.form.copy()
 
