@@ -64,3 +64,4 @@ target/
 # Everything Else
 gitignore
 catalogizer.db
+client_secrets.json
