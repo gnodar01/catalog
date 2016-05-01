@@ -16,8 +16,10 @@
 			{% for record in records %}
 				<li class="mdl-list">
 					<a href={{ url_for('showRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--primary"> {{ record.name }} </a>
-					<a href={{ url_for('editRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> mode_edit </i> </a>
-					<a href={{ url_for('deleteRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> delete </i> </a>
+					{% if current_user == catalog.user_id %}
+						<a href={{ url_for('editRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> mode_edit </i> </a>
+						<a href={{ url_for('deleteRecord', catalog_id=catalog.id, category_id=category.id, record_id=record.id) }} class="mdl-button mdl-js-button mdl-button--icon"> <i class="material-icons"> delete </i> </a>
+					{% endif %}
 				</li>
 			{% endfor %}
 		</ul>
