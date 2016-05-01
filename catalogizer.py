@@ -171,8 +171,11 @@ def newCatalog():
 
 @app.route('/catalog/<int:catalog_id>/edit/', methods=['GET','POST'])
 def editCatalog(catalog_id):
-    # TODO: Cannot edit catalog unless current user is owner
     catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can edit this catalog.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         newCatalogName = request.form['new-catalog-name']
         catalog.name = newCatalogName
@@ -184,8 +187,11 @@ def editCatalog(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/delete/', methods=['GET','POST'])
 def deleteCatalog(catalog_id):
-    # TODO: Cannot delete catalog unless current user is owner
     catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can delete this catalog.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         delCatalog(catalog_id)
         return redirect(url_for('viewCatalogs'))
@@ -200,11 +206,14 @@ def viewCategories(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/category/new', methods=['GET','POST'])
 def newCategory(catalog_id):
-    # TODO: cannot create category unless current user is catalog owner for this category
     if 'user_id' not in login_session:
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can add a category to it.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         categoryName = request.form['category-name']
         categoryEntry = Category(name=categoryName, catalog_id=catalog.id)
@@ -217,7 +226,11 @@ def newCategory(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/', methods=['GET','POST'])
 def editCategory(catalog_id, category_id):
-    # TODO: cannot edit category unless current user is catalog owner for this category
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can edit this category.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     category = getCategory(category_id)
     if request.method == 'POST':
         newCategoryName = request.form['new-category-name']
@@ -226,18 +239,19 @@ def editCategory(catalog_id, category_id):
         flash('%s successfully edited!' % newCategoryName)
         return redirect(url_for('viewCategories', catalog_id=catalog_id))
     else:
-        catalog = getCatalog(catalog_id)
         return render_template('editCategory.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/', methods=['GET','POST'])
 def deleteCategory(catalog_id, category_id):
-    # TODO: cannot delete category unless current user is catalog owner for this category
     catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can delete this category.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         delCategory(category_id)
         return redirect(url_for('viewCategories', catalog_id=catalog_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         return render_template('deleteCategory.html', catalog=catalog, category=category)
 
@@ -250,20 +264,27 @@ def viewRecords(catalog_id, category_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
-    # TODO: can only access add record if current user is catalog owner for this category
     if 'user_id' not in login_session:
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can add a new record to it.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     category = getCategory(category_id)
     recordTemplates = getRecordTemplates(category_id)
     return render_template('addRecord.html', catalog=catalog, category=category, rTemplates=recordTemplates, current_user=login_session['user_id'])
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
-    # TODO: can only add new record if current user is catalog owner for this record template
     if 'user_id' not in login_session:
         return redirect('/login')
+
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can add a new record to it.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
         recordName = request.form['record-name']
@@ -271,7 +292,6 @@ def newRecord(catalog_id, category_id, record_template_id):
         flash('%s successfully created!' % recordName)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         recordTemplate = getRecordTemplate(record_template_id)
         fieldTemplatesWithOptions = getFormattedFieldTemplatesWithOptions(record_template_id)
@@ -279,7 +299,11 @@ def newRecord(catalog_id, category_id, record_template_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/', methods=['GET', 'POST'])
 def editRecord(catalog_id, category_id, record_id):
-    # TODO: can only edit record if current user is owner of the catalog for this record
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can edit this record.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     record = getRecord(record_id)
     if request.method == 'POST':
         newName = request.form['record-name']
@@ -289,21 +313,23 @@ def editRecord(catalog_id, category_id, record_id):
         flash('%s successfully edited!' % newName)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         fieldTemplatesWithValues = getFieldTemplatesWithValues(record_id)
         return render_template('editRecord.html', catalog=catalog, category=category, record=record, fTemplates=fieldTemplatesWithValues)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
-    # TODO: can only delete record if current user is owner of the catalog for this record
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can delete this record.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         record = getRecord(record_id)
         flash('%s successfully deleted!' % record.name)
         delRecord(record_id)
         return redirect(url_for('viewRecords', catalog_id=catalog_id, category_id=category_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         record = getRecord(record_id)
         return render_template('deleteRecord.html', catalog=catalog, category=category, record=record)
@@ -318,9 +344,13 @@ def showRecord(catalog_id, category_id, record_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/', methods=['GET','POST'])
 def newRecordTemplate(catalog_id, category_id):
-    # TODO: can only create record template if current user is catalog owner for this template
     if 'user_id' not in login_session:
         return redirect('/login')
+
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can add a record template for it.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
         formData = request.form.copy()
@@ -350,13 +380,16 @@ def newRecordTemplate(catalog_id, category_id):
         flash('%s successfully created!' % recordTemplateName)
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         return render_template('recordTemplate.html', catalog=catalog, category=category)
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/', methods=['GET', 'POST'])
 def editRecordTemplate(catalog_id, category_id, record_template_id):
-    # TODO: can only edit template if current user is catalog owner for this template
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can edit this record template.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     rTemplate = getRecordTemplate(record_template_id)
     if request.method == 'POST':
         newRecordTemplateName = request.form['new-rt-name']
@@ -371,12 +404,15 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
-    # TODO: can only delete template if current user is catalog owner for this template
+    catalog = getCatalog(catalog_id)
+    if catalog.user_id != login_session['user_id']:
+        flash('Only the owner of %s can delete this record template.' % catalog.name)
+        return redirect(url_for('viewCatalogs'))
+
     if request.method == 'POST':
         delRecord_Template(record_template_id)
         return redirect(url_for('addRecord', catalog_id=catalog_id, category_id=category_id))
     else:
-        catalog = getCatalog(catalog_id)
         category = getCategory(category_id)
         rTemplate = getRecordTemplate(record_template_id)
         return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
