@@ -1,6 +1,6 @@
 import random, string, httplib2, json, requests
 
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 app = Flask(__name__)
 from flask import session as login_session
 
@@ -161,7 +161,7 @@ def newCatalog():
 
     if request.method == 'POST':
         catalogName = request.form['catalog-name']
-        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=1)
+        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=login_session['user_id'])
         session.add(newCatalogEntry)
         session.commit()
         flash('%s successfully created!' % catalogName)
@@ -311,7 +311,7 @@ def showRecord(catalog_id, category_id, record_id):
 def newRecordTemplate(catalog_id, category_id):
     if 'user_id' not in login_session:
         return redirect('/login')
-        
+
     if request.method == 'POST':
         formData = request.form.copy()
 
