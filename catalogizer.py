@@ -1,6 +1,6 @@
 import random, string, httplib2, json, requests
 
-from flask import Flask, render_template, request, redirect, url_for, flash, make_response
+from flask import (Flask, render_template, request, redirect, url_for, flash, make_response)
 app = Flask(__name__)
 from flask import session as login_session
 
@@ -28,10 +28,10 @@ def show_login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
     if 'gplus_id' in login_session:
-        flash('You are already logged in.')
+        flash('You are already logged in.', 'error')
         return redirect('/')
     if 'facebook_id' in login_session:
-        flash('You are already logged in.')
+        flash('You are already logged in.', 'error')
         return redirect('/')
     return render_template('login.html', STATE=state)
 
@@ -256,7 +256,7 @@ def disconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
-        flash('You are not logged in')
+        flash('You are not logged in', 'error')
         return redirect(url_for('show_login'))
 
     if 'gplus_id' in login_session:
@@ -292,7 +292,7 @@ def newCatalog():
 def editCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can edit this catalog.' % catalog.name)
+        flash('Only the owner of %s can edit this catalog.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -308,7 +308,7 @@ def editCatalog(catalog_id):
 def deleteCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can delete this catalog.' % catalog.name)
+        flash('Only the owner of %s can delete this catalog.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -330,7 +330,7 @@ def newCategory(catalog_id):
 
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can add a category to it.' % catalog.name)
+        flash('Only the owner of %s can add a category to it.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -347,7 +347,7 @@ def newCategory(catalog_id):
 def editCategory(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can edit this category.' % catalog.name)
+        flash('Only the owner of %s can edit this category.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     category = getCategory(category_id)
@@ -364,7 +364,7 @@ def editCategory(catalog_id, category_id):
 def deleteCategory(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can delete this category.' % catalog.name)
+        flash('Only the owner of %s can delete this category.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -388,7 +388,7 @@ def addRecord(catalog_id, category_id):
 
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can add a new record to it.' % catalog.name)
+        flash('Only the owner of %s can add a new record to it.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     category = getCategory(category_id)
@@ -402,7 +402,7 @@ def newRecord(catalog_id, category_id, record_template_id):
 
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can add a new record to it.' % catalog.name)
+        flash('Only the owner of %s can add a new record to it.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -420,7 +420,7 @@ def newRecord(catalog_id, category_id, record_template_id):
 def editRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can edit this record.' % catalog.name)
+        flash('Only the owner of %s can edit this record.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     record = getRecord(record_id)
@@ -440,7 +440,7 @@ def editRecord(catalog_id, category_id, record_id):
 def deleteRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can delete this record.' % catalog.name)
+        flash('Only the owner of %s can delete this record.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -468,7 +468,7 @@ def newRecordTemplate(catalog_id, category_id):
 
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can add a record template for it.' % catalog.name)
+        flash('Only the owner of %s can add a record template for it.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -506,7 +506,7 @@ def newRecordTemplate(catalog_id, category_id):
 def editRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can edit this record template.' % catalog.name)
+        flash('Only the owner of %s can edit this record template.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     rTemplate = getRecordTemplate(record_template_id)
@@ -525,7 +525,7 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
-        flash('Only the owner of %s can delete this record template.' % catalog.name)
+        flash('Only the owner of %s can delete this record template.' % catalog.name, 'error')
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
@@ -732,8 +732,6 @@ def delCatalog(catalog_id):
 
     session.delete(catalog)
     session.commit()
-
-
 
 
 if __name__ == '__main__':
