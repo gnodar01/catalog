@@ -31,7 +31,7 @@ def show_login():
 
 @app.route('/gconnect', methods=['Post'])
 def gconnect():
-    if request.args.get('state') != login_session['state']:
+    if request.args.get('state') != login_session.get('state'):
         response = make_response(json.dumps('Invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -122,14 +122,14 @@ def gconnect():
 # DISCONNECT - Revoke a current user's token and reset their login_session.
 def gdisconnect():
     # Only disconnect a connected user.
-    access_token = login_session['access_token']
+    access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
         response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -152,7 +152,7 @@ def gdisconnect():
 @app.route('/catalog/')
 def viewCatalogs():
     catalogs = getCatalogs()
-    return render_template('viewCatalogs.html', catalogs=catalogs, current_user=login_session['user_id'])
+    return render_template('viewCatalogs.html', catalogs=catalogs, current_user=login_session.get('user_id'))
 
 @app.route('/catalog/new/', methods=['GET','POST'])
 def newCatalog():
@@ -161,7 +161,7 @@ def newCatalog():
 
     if request.method == 'POST':
         catalogName = request.form['catalog-name']
-        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=login_session['user_id'])
+        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=login_session.get('user_id'))
         session.add(newCatalogEntry)
         session.commit()
         flash('%s successfully created!' % catalogName)
@@ -172,7 +172,7 @@ def newCatalog():
 @app.route('/catalog/<int:catalog_id>/edit/', methods=['GET','POST'])
 def editCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can edit this catalog.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -188,7 +188,7 @@ def editCatalog(catalog_id):
 @app.route('/catalog/<int:catalog_id>/delete/', methods=['GET','POST'])
 def deleteCatalog(catalog_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can delete this catalog.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -202,7 +202,7 @@ def deleteCatalog(catalog_id):
 def viewCategories(catalog_id):
     catalog = getCatalog(catalog_id)
     categories = getCategories(catalog_id)
-    return render_template('viewCategories.html', catalog=catalog, categories=categories, current_user=login_session['user_id'])
+    return render_template('viewCategories.html', catalog=catalog, categories=categories, current_user=login_session.get('user_id'))
 
 @app.route('/catalog/<int:catalog_id>/category/new', methods=['GET','POST'])
 def newCategory(catalog_id):
@@ -210,7 +210,7 @@ def newCategory(catalog_id):
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can add a category to it.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -227,7 +227,7 @@ def newCategory(catalog_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/edit/', methods=['GET','POST'])
 def editCategory(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can edit this category.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -244,7 +244,7 @@ def editCategory(catalog_id, category_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/delete/', methods=['GET','POST'])
 def deleteCategory(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can delete this category.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -260,7 +260,7 @@ def viewRecords(catalog_id, category_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
     records = getRecordsByCategoryId(category_id)
-    return render_template('viewRecords.html', catalog=catalog, category=category, records=records, current_user=login_session['user_id'])
+    return render_template('viewRecords.html', catalog=catalog, category=category, records=records, current_user=login_session.get('user_id'))
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/')
 def addRecord(catalog_id, category_id):
@@ -268,13 +268,13 @@ def addRecord(catalog_id, category_id):
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can add a new record to it.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
     category = getCategory(category_id)
     recordTemplates = getRecordTemplates(category_id)
-    return render_template('addRecord.html', catalog=catalog, category=category, rTemplates=recordTemplates, current_user=login_session['user_id'])
+    return render_template('addRecord.html', catalog=catalog, category=category, rTemplates=recordTemplates, current_user=login_session.get('user_id'))
 
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET','POST'])
 def newRecord(catalog_id, category_id, record_template_id):
@@ -282,7 +282,7 @@ def newRecord(catalog_id, category_id, record_template_id):
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can add a new record to it.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -300,7 +300,7 @@ def newRecord(catalog_id, category_id, record_template_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/', methods=['GET', 'POST'])
 def editRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can edit this record.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -320,7 +320,7 @@ def editRecord(catalog_id, category_id, record_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can delete this record.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -348,7 +348,7 @@ def newRecordTemplate(catalog_id, category_id):
         return redirect('/login')
 
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can add a record template for it.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -386,7 +386,7 @@ def newRecordTemplate(catalog_id, category_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/', methods=['GET', 'POST'])
 def editRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can edit this record template.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
@@ -405,7 +405,7 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
 @app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
-    if catalog.user_id != login_session['user_id']:
+    if catalog.user_id != login_session.get('user_id'):
         flash('Only the owner of %s can delete this record template.' % catalog.name)
         return redirect(url_for('viewCatalogs'))
 
