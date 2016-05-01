@@ -19,7 +19,6 @@
 	data-callback="signInCallback"
 	data-approvalprompt="force"></span> {# disable force in production #}
 </div>
-<div id="result"></div>
 
 {# Google sign in callback #}
 <script>
@@ -107,6 +106,8 @@
 		<a href='javascript:sendTokenToServer()'>Login with Facebook</a>
 	</fb:login-button>
 </button>
+
+<div id="result"></div>
 
 
 {% endblock %}

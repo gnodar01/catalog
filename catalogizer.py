@@ -211,9 +211,8 @@ def gdisconnect():
         del login_session['picture']
         del login_session['user_id']
 
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash('You have been sucessfully logged out')
+        return redirect(url_for('viewCatalogs'))
     else:
         print login_session
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
@@ -239,9 +238,8 @@ def fbdisconnect():
         del login_session['picture']
         del login_session['user_id']
 
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash('You have been sucessfully logged out')
+        return redirect(url_for('viewCatalogs'))
     else:
         response = make_response(json.dumps(
                    'Failed to revoke token for given user.', 400))
@@ -258,9 +256,8 @@ def disconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
-        response = make_response(json.dumps('Current user not connected.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash('You are not logged in')
+        return redirect(url_for('show_login'))
 
     if 'gplus_id' in login_session:
         return gdisconnect()
