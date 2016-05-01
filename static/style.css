@@ -1,3 +1,20 @@
 #content-wrap {
 	margin: 30px;
 }
+
+.message {
+	background-color: #98FB98;
+	width:100%;
+	text-decoration: none;
+}
+
+.error {
+	background-color: #fb9898;
+	width:100%;
+	text-decoration: none;
+}
+
+.flash li {
+	list-style-type: none;
+	text-align: center;
+}
