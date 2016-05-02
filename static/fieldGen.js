@@ -202,6 +202,7 @@ function genField(fdNum) {
 }
 
 // Initialize functions for add field, which will add an addition Field Label and Field Kind with a unique div id, and field kind select which will add inputs for options if appropriate (if field kind is checkbox, radio list, and drop down)
+window.onload = function() {
 	var addFieldButton = document.getElementById("add-field-button");
 	addFieldButton.disabled = false;
 	addFieldButton.onclick = function() { genField(2) };
