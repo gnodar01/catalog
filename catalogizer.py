@@ -1,6 +1,6 @@
 import random, string, httplib2, json, requests
 
-from flask import (Flask, render_template, request, redirect, url_for, flash, make_response)
+from flask import (Flask, render_template, request, redirect, url_for, flash, make_response, jsonify)
 app = Flask(__name__)
 from flask import session as login_session
 
@@ -271,7 +271,7 @@ def newCatalog():
 
     if request.method == 'POST':
         catalogName = request.form['catalog-name']
-        newCatalogEntry = Catalog(name=catalogName, privacy='public-readable', user_id=login_session.get('user_id'))
+        newCatalogEntry = Catalog(name=catalogName, user_id=login_session.get('user_id'))
         session.add(newCatalogEntry)
         session.commit()
         flash('%s successfully created!' % catalogName)
@@ -531,6 +531,29 @@ def deleteRecordTemplate(catalog_id, category_id, record_template_id):
         category = getCategory(category_id)
         rTemplate = getRecordTemplate(record_template_id)
         return render_template('deleteRecordTemplate.html', catalog=catalog, category=category, rTemplate=rTemplate)
+
+# JSON API Endpoints
+
+@app.route('/catalog/json/')
+def catalogListJSON():
+    catalogs = getCatalogs()
+    return jsonify(Catalogs=[c.serialize for c in catalogs])
+
+@app.route('/catalog/<int:catalog_id>/category/json/')
+def categoryListJSON(catalog_id):
+    categories = getCategories(catalog_id)
+    return jsonify(Categories=[c.serialize for c in categories])
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/json/')
+def recordListJSON(catalog_id, category_id):
+    records = getRecordsByCategoryId(category_id)
+    return jsonify(Records=[r.serialize for r in records])
+
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/json/')
+def fieldListJSON(catalog_id, category_id, record_id):
+    fields = getFields(record_id)
+    return jsonify(Fields=[r.serialize for r in fields])
+
 
 
 # Helper functions for adding new entries or updating entries

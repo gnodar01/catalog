@@ -18,12 +18,17 @@ class Catalog(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    privacy = Column(Enum('public-readable',
-                          'public-writeable',
-                          'private'),
-                           nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+
+    @property
+    def serialize(self):
+       """Return catalog data in easily serializeable format"""
+       return {
+           'name': self.name,
+           'id': self.id,
+           'owner': self.user.name
+       }
 
 class Category(Base):
     __tablename__ = 'category'
@@ -32,6 +37,15 @@ class Category(Base):
     name = Column(String(250), nullable=False)
     catalog_id = Column(Integer, ForeignKey('catalog.id'))
     catalog = relationship(Catalog)
+
+    @property
+    def serialize(self):
+        """Return list of categories for a given catalog in easily serializeable format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'parent_catalog': self.catalog.name
+        }
 
 class RecordTemplate(Base):
     __tablename__ = 'record_template'
@@ -76,6 +90,16 @@ class Record(Base):
     record_template = relationship(RecordTemplate)
     category = relationship(Category)
 
+    @property
+    def serialize(self):
+        """Return list of records for a given categories in easily serializeable format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'parent_category': self.category.name,
+            'parent_catalog': self.category.catalog.name
+        }
+
 
 class Field(Base):
     __tablename__ = 'field'
@@ -86,6 +110,18 @@ class Field(Base):
     field_template_id = Column(Integer, ForeignKey('field_template.id'))
     record = relationship(Record)
     field_template = relationship(FieldTemplate)
+
+    @property
+    def serialize(self):
+        """Return record data in easily serializeable format"""
+        return {
+            'id': self.id,
+            'field_label': self.field_template.label,
+            'field_value': self.value,
+            'parent_record': self.record.name,
+            'parent_category': self.record.category.name,
+            'parent_catalog': self.record.category.catalog.name
+        }
 
 
 engine = create_engine('sqlite:///catalogizer.db')

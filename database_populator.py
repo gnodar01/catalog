@@ -14,7 +14,7 @@ User1 = User(name='Goku', email='luv2battle@kamehouse.com')
 session.add(User1)
 session.commit()
 
-catalog1 = Catalog(name='Battle-log', privacy='public-readable', user_id=1)
+catalog1 = Catalog(name='Battle-log', user_id=1)
 session.add(catalog1)
 session.commit()
 
