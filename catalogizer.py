@@ -99,7 +99,7 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    # See if user exists and get Id assigned in database.
+    # See if user exists and get ID assigned in database.
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
@@ -133,10 +133,9 @@ def fbconnect():
         return response
     access_token = request.data
 
-    app_id = json.loads(
-             open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(
-                 open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
+    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+
     url = ('https://graph.facebook.com/oauth/access_token?'
            'grant_type=fb_exchange_token&client_id=%s&client_secret=%s&'
            'fb_exchange_token=%s' % (app_id, app_secret, access_token))
@@ -145,7 +144,7 @@ def fbconnect():
 
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.4/me"
-    # strip expire tag from access token
+    # Strip expire tag from access token
     token = result.split("&")[0]
 
     url = userinfo_url + '?%s&fields=name,id,email' % token
@@ -201,7 +200,6 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print result
 
     if result['status'] == '200':
         del login_session['access_token'] 
@@ -214,17 +212,14 @@ def gdisconnect():
         flash('You have been sucessfully logged out')
         return redirect(url_for('viewCatalogs'))
     else:
-        print login_session
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
 def fbdisconnect():
-    facebook_id = login_session['facebook_id']
-    # The access token must be included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
-           facebook_id,access_token)
+    facebook_id = login_session['facebook_id']
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     print 'result is '
@@ -241,12 +236,9 @@ def fbdisconnect():
         flash('You have been sucessfully logged out')
         return redirect(url_for('viewCatalogs'))
     else:
-        response = make_response(json.dumps(
-                   'Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
-
-    return "you have been logged out"
 
 @app.route("/disconnect/")
 def disconnect():
@@ -255,7 +247,6 @@ def disconnect():
 
     access_token = login_session.get('access_token')
     if access_token is None:
-        print 'Access Token is None'
         flash('You are not logged in', 'error')
         return redirect(url_for('show_login'))
 
@@ -269,7 +260,7 @@ def disconnect():
 @app.route('/')
 @app.route('/catalog/')
 def viewCatalogs():
-    print login_session
+    # print login_session
     catalogs = getCatalogs()
     return render_template('viewCatalogs.html', catalogs=catalogs, current_user=login_session.get('user_id'))
 
@@ -472,16 +463,21 @@ def newRecordTemplate(catalog_id, category_id):
         return redirect(url_for('viewCatalogs'))
 
     if request.method == 'POST':
+        # werkzeug returns an immutable object. Using .copy() creates a mutable copy.
         formData = request.form.copy()
 
+        # Pop recordTemplateName as it has a different format than the other values, and goes in a seperate table.
         recordTemplateName = formData.pop('template-name')
         recordTemplateEntry = RecordTemplate(name=recordTemplateName, category_id=category_id)
         session.add(recordTemplateEntry)
         session.commit()
 
+        # Iterate over form inputs, placing labels and field kind inside the FieldTemplate table, and options within the Option table.
         for keyValue in formData.lists():
+            # Each field template has a 'label' and a field 'kind', which may or may not have 'options' assigned to it. They are grouped together by a group identifier number at the beginning of the field name (before the first hyphen).
             groupIdentifier = keyValue[0][0:keyValue[0].find("-")]
             inputType = keyValue[0][keyValue[0].find("-") + 1:]
+            # For each of the inputs with the name "field-kind", find their label and options using the group identifier and add them to their respective tables.
             if inputType == "field-kind":
                 fieldTemplateLabel = formData.get(groupIdentifier + "-field-label")
                 fieldTemplateKind = formData.get(groupIdentifier + "-field-kind")
@@ -662,6 +658,7 @@ def getFormattedFieldTemplatesWithOptions(record_template_id):
     return fieldsWithOptions
 
 def getFieldTemplatesWithValues(record_id):
+    """Returns a list of dictionaries containing field template id, label, kind, a list of options for that field template, and the value(s) for that field. Field Templates of the kind 'checkbox' may have more than one of the options selected as s value"""
     record = getRecord(record_id)
     ftDictList = getFormattedFieldTemplatesWithOptions(record.record_template_id)
 
