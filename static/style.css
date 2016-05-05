@@ -2,6 +2,12 @@
 	margin: 30px;
 }
 
+#record-container {
+	margin: 20px;
+}
+
+/* Styling for Flash Messages */
+
 .message {
 	background-color: #98FB98;
 	width:100%;

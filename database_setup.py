@@ -2,8 +2,9 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
- 
+
 Base = declarative_base()
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -12,6 +13,7 @@ class User(Base):
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     picture = Column(String(250))
+
 
 class Catalog(Base):
     __tablename__ = 'catalog'
@@ -23,12 +25,13 @@ class Catalog(Base):
 
     @property
     def serialize(self):
-       """Return catalog data in easily serializeable format"""
-       return {
-           'name': self.name,
-           'id': self.id,
-           'owner': self.user.name
-       }
+        """Return catalog data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'id': self.id,
+            'owner': self.user.name
+        }
+
 
 class Category(Base):
     __tablename__ = 'category'
@@ -40,12 +43,14 @@ class Category(Base):
 
     @property
     def serialize(self):
-        """Return list of categories for a given catalog in easily serializeable format"""
+        """Return list of categories for a given catalog in easily
+        serializeable format"""
         return {
             'id': self.id,
             'name': self.name,
             'parent_catalog': self.catalog.name
         }
+
 
 class RecordTemplate(Base):
     __tablename__ = 'record_template'
@@ -57,21 +62,22 @@ class RecordTemplate(Base):
     template_fields = relationship("FieldTemplate",
                                    back_populates="record_template")
 
+
 class FieldTemplate(Base):
     __tablename__ = 'field_template'
 
     id = Column(Integer, primary_key=True)
     label = Column(String(250), nullable=False)
     kind = Column(Enum('short_text',
-                        'long_text',
-                        'drop_down',
-                        'check_box',
-                        'radio'),
-                        nullable=False)
+                       'long_text',
+                       'drop_down',
+                       'check_box',
+                       'radio'), nullable=False)
     order = Column(Integer, nullable=False)
     record_template_id = Column(Integer, ForeignKey('record_template.id'))
     record_template = relationship("RecordTemplate",
-                                    back_populates='template_fields')
+                                   back_populates='template_fields')
+
 
 class Option(Base):
     __tablename__ = 'option'
@@ -80,6 +86,7 @@ class Option(Base):
     name = Column(String(250), nullable=False)
     field_template_id = Column(Integer, ForeignKey('field_template.id'))
     field_template = relationship(FieldTemplate)
+
 
 class Record(Base):
     __tablename__ = 'record'
@@ -92,7 +99,8 @@ class Record(Base):
 
     @property
     def serialize(self):
-        """Return list of records for a given categories in easily serializeable format"""
+        """Return list of records for a given categories in easily
+        serializeable format"""
         return {
             'id': self.id,
             'name': self.name,

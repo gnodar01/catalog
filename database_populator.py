@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from database_setup import (Base, User, Catalog, Category, Record, Field,
-							RecordTemplate, FieldTemplate, Option)
+                            RecordTemplate, FieldTemplate, Option)
 
 engine = create_engine('sqlite:///catalogizer.db')
 Base.metadata.bind = engine
@@ -26,11 +26,17 @@ recordTemplate1 = RecordTemplate(category_id=1, name='Kamehameha Template')
 session.add(recordTemplate1)
 session.commit()
 
-fieldTemplate1 = FieldTemplate(label='Blast Name', kind='short_text', order=1, record_template_id=1)
+fieldTemplate1 = FieldTemplate(label='Blast Name',
+                               kind='short_text',
+                               order=1,
+                               record_template_id=1)
 session.add(fieldTemplate1)
 session.commit()
 
-fieldTemplate2 = FieldTemplate(label='Damage (min-max)', kind='check_box', order=2, record_template_id=1)
+fieldTemplate2 = FieldTemplate(label='Damage (min-max)',
+                               kind='check_box',
+                               order=2,
+                               record_template_id=1)
 session.add(fieldTemplate2)
 session.commit()
 
@@ -58,7 +64,10 @@ option6 = Option(name='Over 9000!!!', field_template_id=2)
 session.add(option6)
 session.commit()
 
-fieldTemplate3 = FieldTemplate(label='Charge Time', kind='drop_down', order=3, record_template_id=1)
+fieldTemplate3 = FieldTemplate(label='Charge Time',
+                               kind='drop_down',
+                               order=3,
+                               record_template_id=1)
 session.add(fieldTemplate3)
 session.commit()
 
@@ -78,7 +87,10 @@ option9 = Option(name='Depends on the mood', field_template_id=3)
 session.add(option9)
 session.commit()
 
-fieldTemplate4 = FieldTemplate(label='Blast Description', kind='long_text', order=4, record_template_id=1)
+fieldTemplate4 = FieldTemplate(label='Blast Description',
+                               kind='long_text',
+                               order=4,
+                               record_template_id=1)
 session.add(fieldTemplate4)
 session.commit()
 
@@ -102,7 +114,9 @@ field4 = Field(value='Depends on the mood', record_id=1, field_template_id=3)
 session.add(field4)
 session.commit()
 
-field5 = Field(value='Developed by the turtle sage himself.', record_id=1, field_template_id=4)
+field5 = Field(value='Developed by the turtle sage himself.',
+               record_id=1,
+               field_template_id=4)
 session.add(field5)
 session.commit()
 
