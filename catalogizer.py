@@ -1,3 +1,5 @@
+from functools import wraps
+
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, make_response, jsonify)
 
@@ -25,6 +27,16 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+def login_required(f):
+    # Needed for decoraters to update __name__ and __module__
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+            if 'user_id' not in login_session:
+                return redirect('/login')
+            return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/login/')
@@ -290,10 +302,8 @@ def viewCatalogs():
 
 
 @app.route('/catalog/new/', methods=['GET', 'POST'])
+@login_required
 def newCatalog():
-    if 'user_id' not in login_session:
-        return redirect('/login')
-
     if request.method == 'POST':
         catalogName = request.form['catalog-name']
         newCatalogEntry = Catalog(name=catalogName,
