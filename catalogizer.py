@@ -444,8 +444,8 @@ def addRecord(catalog_id, category_id):
                            current_user=login_session.get('user_id'))
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/\
-           add/<int:record_template_id>/new/', methods=['GET', 'POST'])
+# Over 80 characters, however URL Routes break if they go to new line.
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/<int:record_template_id>/new/', methods=['GET', 'POST'])
 def newRecord(catalog_id, category_id, record_template_id):
     if 'user_id' not in login_session:
         return redirect('/login')
@@ -475,8 +475,7 @@ def newRecord(catalog_id, category_id, record_template_id):
                                fTemplates=fieldTemplatesWithOptions)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/\
-           <int:record_id>/edit/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/edit/', methods=['GET', 'POST'])
 def editRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
@@ -504,8 +503,7 @@ def editRecord(catalog_id, category_id, record_id):
                                fTemplates=fieldTemplatesWithValues)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/\
-           <int:record_id>/delete/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/delete/', methods=['GET', 'POST'])
 def deleteRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
@@ -529,8 +527,7 @@ def deleteRecord(catalog_id, category_id, record_id):
                                record=record)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/\
-           <int:record_id>/view/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/')
 def showRecord(catalog_id, category_id, record_id):
     catalog = getCatalog(catalog_id)
     category = getCategory(category_id)
@@ -543,8 +540,7 @@ def showRecord(catalog_id, category_id, record_id):
                            fields=fields)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/\
-           template/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/', methods=['GET', 'POST'])
 def newRecordTemplate(catalog_id, category_id):
     if 'user_id' not in login_session:
         return redirect('/login')
@@ -614,8 +610,7 @@ def newRecordTemplate(catalog_id, category_id):
                                category=category)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/\
-           template/<int:record_template_id>/edit/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/edit/', methods=['GET', 'POST'])
 def editRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
@@ -641,8 +636,7 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
                                rTemplate=rTemplate)
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/\
-           template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/add/template/<int:record_template_id>/delete/', methods=['GET', 'POST'])
 def deleteRecordTemplate(catalog_id, category_id, record_template_id):
     catalog = getCatalog(catalog_id)
     if catalog.user_id != login_session.get('user_id'):
@@ -685,8 +679,7 @@ def recordListJSON(catalog_id, category_id):
     return jsonify(Records=[r.serialize for r in records])
 
 
-@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/\
-           <int:record_id>/view/json/')
+@app.route('/catalog/<int:catalog_id>/category/<int:category_id>/record/<int:record_id>/view/json/')
 def fieldListJSON(catalog_id, category_id, record_id):
     fields = getFields(record_id)
     return jsonify(Fields=[r.serialize for r in fields])
