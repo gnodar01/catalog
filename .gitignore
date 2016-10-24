@@ -62,7 +62,9 @@ target/
 .ipynb_checkpoints
 
 # Everything Else
+.gitignore
 gitignore
 catalogizer.db
 client_secrets.json
 fb_client_secrets.json
+.vagrant
