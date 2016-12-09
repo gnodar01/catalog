@@ -23,7 +23,7 @@ APP_PATH = '/var/www/catalog/catalog/'
 CLIENT_ID = json.loads(open(
                        APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 
-engine = create_engine('postgresql://grader:strts1@localhost/catalogizer')
+engine = create_engine('postgresql://catalog:strts1@localhost/catalogizer')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

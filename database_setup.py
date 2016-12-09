@@ -133,6 +133,6 @@ class Field(Base):
         }
 
 
-engine = create_engine('postgresql://grader:strts1@localhost/catalogizer')
+engine = create_engine('postgresql://catalog:strts1@localhost/catalogizer')
 
 Base.metadata.create_all(engine)
