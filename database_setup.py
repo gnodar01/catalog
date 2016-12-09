@@ -72,7 +72,8 @@ class FieldTemplate(Base):
                        'long_text',
                        'drop_down',
                        'check_box',
-                       'radio'), nullable=False)
+                       'radio',
+                       name='field_kind'), nullable=False)
     order = Column(Integer, nullable=False)
     record_template_id = Column(Integer, ForeignKey('record_template.id'))
     record_template = relationship("RecordTemplate",
