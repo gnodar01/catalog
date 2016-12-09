@@ -22,7 +22,7 @@ APPLICATION_NAME = "Catalogizer"
 CLIENT_ID = json.loads(open(
                        'client_secrets.json', 'r').read())['web']['client_id']
 
-engine = create_engine('sqlite:///catalogizer.db')
+engine = create_engine('postgresql://grader:strts1@localhost/catalogizer')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

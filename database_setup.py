@@ -132,6 +132,6 @@ class Field(Base):
         }
 
 
-engine = create_engine('sqlite:///catalogizer.db')
+engine = create_engine('postgresql://grader:strts1@localhost/catalogizer')
 
 Base.metadata.create_all(engine)
