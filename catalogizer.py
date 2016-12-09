@@ -19,8 +19,9 @@ app = Flask(__name__)
 APPLICATION_NAME = "Catalogizer"
 
 # client id for google openID
+APP_PATH = '/var/www/catalog/catalog/'
 CLIENT_ID = json.loads(open(
-                       'client_secrets.json', 'r').read())['web']['client_id']
+                       APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 
 engine = create_engine('postgresql://grader:strts1@localhost/catalogizer')
 Base.metadata.bind = engine
@@ -64,7 +65,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object that can be
         # used to authorize requests.
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(APP_PATH + 'client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -159,9 +160,9 @@ def fbconnect():
     access_token = request.data
 
     app_id = json.loads(open(
-             'fb_client_secrets.json', 'r').read())['web']['app_id']
+             APP_PATH + 'fb_client_secrets.json', 'r').read())['web']['app_id']
     app_secret = json.loads(open(
-                 'fb_client_secrets.json', 'r').read())['web']['app_secret']
+                 APP_PATH + 'fb_client_secrets.json', 'r').read())['web']['app_secret']
 
     url = ('https://graph.facebook.com/oauth/access_token?'
            'grant_type=fb_exchange_token&client_id=%s&client_secret=%s&'
