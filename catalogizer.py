@@ -250,8 +250,7 @@ def gdisconnect():
 def fbdisconnect():
     access_token = login_session['access_token']
     facebook_id = login_session['facebook_id']
-    url = 'https://graph.facebook.com/%s/\
-          permissions?access_token=%s' % (facebook_id, access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     print 'result is '
@@ -269,7 +268,7 @@ def fbdisconnect():
         return redirect(url_for('viewCatalogs'))
     else:
         response = make_response(json.dumps(
-                   'Failed to revoke token for given user.', 400))
+                   'Failed to revoke token for given user.:%s' % (url), 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
