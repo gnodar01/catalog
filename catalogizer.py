@@ -959,6 +959,9 @@ def delRecord_Template(record_template_id):
 
     flash('%s successfully deleted!' % recordTemplate.name)
 
+    for record in records:
+        delRecord(record.id)
+
     for fieldTemplate in fieldTemplates:
         options = getOptions(fieldTemplate.id)
         for option in options:
@@ -974,9 +977,6 @@ def delRecord_Template(record_template_id):
         except:
             session.rollback()
             raise
-
-    for record in records:
-        delRecord(record.id)
 
     try:
         session.delete(recordTemplate)
