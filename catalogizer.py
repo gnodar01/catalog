@@ -309,9 +309,13 @@ def newCatalog():
         catalogName = request.form['catalog-name']
         newCatalogEntry = Catalog(name=catalogName,
                                   user_id=login_session.get('user_id'))
-        session.add(newCatalogEntry)
-        session.commit()
-        flash('%s successfully created!' % catalogName)
+        try:
+	    session.add(newCatalogEntry)
+            session.commit()
+            flash('%s successfully created!' % catalogName)
+        except:
+            session.rollback()
+            raise
         return redirect(url_for('viewCatalogs'))
     else:
         return render_template('newCatalog.html')
@@ -329,8 +333,12 @@ def editCatalog(catalog_id):
     if request.method == 'POST':
         newCatalogName = request.form['new-catalog-name']
         catalog.name = newCatalogName
-        session.commit()
-        flash('%s successfully edited!' % newCatalogName)
+        try:
+            session.commit()
+            flash('%s successfully edited!' % newCatalogName)
+        except:
+            session.rollback()
+            raise
         return redirect(url_for('viewCatalogs'))
     else:
         return render_template('editCatalog.html', catalog=catalog)
@@ -374,9 +382,13 @@ def newCategory(catalog_id):
     if request.method == 'POST':
         categoryName = request.form['category-name']
         categoryEntry = Category(name=categoryName, catalog_id=catalog.id)
-        session.add(categoryEntry)
-        session.commit()
-        flash('%s successfully created!' % categoryName)
+        try:
+            session.add(categoryEntry)
+            session.commit()
+            flash('%s successfully created!' % categoryName)
+        except:
+            session.rollback()
+            raise
         return redirect(url_for('viewCategories', catalog_id=catalog.id))
     else:
         return render_template('newCategory.html', catalog=catalog)
@@ -396,7 +408,11 @@ def editCategory(catalog_id, category_id):
     if request.method == 'POST':
         newCategoryName = request.form['new-category-name']
         category.name = newCategoryName
-        session.commit()
+        try:
+            session.commit()
+        except:
+            session.rollback()
+            raise
         flash('%s successfully edited!' % newCategoryName)
         return redirect(url_for('viewCategories', catalog_id=catalog_id))
     else:
@@ -570,8 +586,12 @@ def newRecordTemplate(catalog_id, category_id):
         recordTemplateName = formData.pop('template-name')
         recordTemplateEntry = RecordTemplate(name=recordTemplateName,
                                              category_id=category_id)
-        session.add(recordTemplateEntry)
-        session.commit()
+        try:
+            session.add(recordTemplateEntry)
+            session.commit()
+        except:
+            session.rollback()
+            raise
 
         # Iterate over form inputs, placing labels and field kind inside the
         # FieldTemplate table, and options within the Option table.
@@ -598,15 +618,23 @@ def newRecordTemplate(catalog_id, category_id):
                                     kind=fieldTemplateKind,
                                     order=groupIdentifier,
                                     record_template_id=recordTemplateEntry.id)
-                session.add(fieldTemplateEntry)
-                session.commit()
+                try:
+                    session.add(fieldTemplateEntry)
+                    session.commit()
+                except:
+                    session.rollback()
+                    raise
 
                 while len(fieldTemplateOptions) > 0:
                     optionEntry = Option(
                                   name=fieldTemplateOptions.pop(0),
                                   field_template_id=fieldTemplateEntry.id)
-                    session.add(optionEntry)
-                    session.commit()
+                    try:
+                        session.add(optionEntry)
+                        session.commit()
+                    except:
+                        session.rollback()
+                        raise
 
         flash('%s successfully created!' % recordTemplateName)
         return redirect(url_for('addRecord',
@@ -632,8 +660,12 @@ def editRecordTemplate(catalog_id, category_id, record_template_id):
     if request.method == 'POST':
         newRecordTemplateName = request.form['new-rt-name']
         rTemplate.name = newRecordTemplateName
-        session.commit()
-        flash('%s successfully edited!' % newRecordTemplateName)
+        try:
+            session.commit()
+            flash('%s successfully edited!' % newRecordTemplateName)
+        except:
+            session.rollback()
+            raise
         return redirect(url_for('addRecord',
                                 catalog_id=catalog_id,
                                 category_id=category_id))
@@ -702,8 +734,12 @@ def createUser(login_session):
     newUser = User(name=login_session['username'],
                    email=login_session['email'],
                    picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
+    try:
+        session.add(newUser)
+        session.commit()
+    except:
+        session.rollback()
+        raise
     # user = session.query(User).filter_by(email=login_session['email']).one()
     # return user.id
     return newUser.id
@@ -719,7 +755,11 @@ def updateUser(user_id, picture, name):
         user.name = name
         change = True
     if change is True:
-        session.commit()
+        try:
+            session.commit()
+        except:
+            session.rollback()
+            raise
 
 
 def addNewRecord(category_id, record_template_id):
@@ -733,8 +773,12 @@ def addNewRecord(category_id, record_template_id):
     newRecordEntry = Record(name=recordName,
                             record_template_id=record_template_id,
                             category_id=category_id)
-    session.add(newRecordEntry)
-    session.commit()
+    try:
+        session.add(newRecordEntry)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
     # Call lists method on the formData multiDict, to get a list of
     # tupples of keys and a list of all values corresponding to each
@@ -750,7 +794,11 @@ def addNewRecord(category_id, record_template_id):
                                   field_template_id=fieldTemplateId,
                                   record_id=newRecordEntry.id)
             session.add(newFieldEntry)
-    session.commit()
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 # Helper functions to filter through and get database elements
@@ -890,10 +938,18 @@ def delRecord(record_id):
     record = getRecord(record_id)
     fields = getFields(record_id)
     for field in fields:
-        session.delete(field)
+        try:
+            session.delete(field)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+    try:
+        session.delete(record)
         session.commit()
-    session.delete(record)
-    session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 def delRecord_Template(record_template_id):
@@ -906,16 +962,28 @@ def delRecord_Template(record_template_id):
     for fieldTemplate in fieldTemplates:
         options = getOptions(fieldTemplate.id)
         for option in options:
-            session.delete(option)
+            try:
+                session.delete(option)
+                session.commit()
+            except:
+                session.rollback()
+                raise
+        try:
+            session.delete(fieldTemplate)
             session.commit()
-        session.delete(fieldTemplate)
-        session.commit()
+        except:
+            session.rollback()
+            raise
 
     for record in records:
         delRecord(record.id)
 
-    session.delete(recordTemplate)
-    session.commit()
+    try:
+        session.delete(recordTemplate)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 def delCategory(category_id):
@@ -927,8 +995,12 @@ def delCategory(category_id):
     for recordTemplate in recordTemplates:
         delRecord_Template(recordTemplate.id)
 
-    session.delete(category)
-    session.commit()
+    try:
+        session.delete(category)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 def delCatalog(catalog_id):
@@ -940,8 +1012,12 @@ def delCatalog(catalog_id):
     for category in categories:
         delCategory(category.id)
 
-    session.delete(catalog)
-    session.commit()
+    try:
+        session.delete(catalog)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 if __name__ == '__main__':
