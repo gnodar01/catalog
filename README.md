@@ -1,5 +1,5 @@
 # README
-Udacity Full-Stack Nanodegree: Project 3 - Catalog
+Udacity Full-Stack Nanodegree: Linux Server Configuration
 
 An Application that provides allows the creation of Catalogs, categories, and customized records for each category.
 
