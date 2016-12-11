@@ -6,7 +6,7 @@ An Application that provides allows the creation of Catalogs, categories, and cu
 ## Server Info
 * IP Address: `35.163.169.28`
 * SSH Port: `2200`
-* App address: `http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/`
+* URL: `http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/`
  
 ### Ubuntu Packages
 * finger
