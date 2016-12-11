@@ -56,3 +56,7 @@ An Application that provides allows the creation of Catalogs, categories, and cu
 		* For example if you delete a Catalog, all Categories, Record Templates, and Records contained inside of it will also be deleted
 * Each user is only able to Edit and Delete Catalogs, or their contents, if they were the original creator
 * You may log out at any time by clicking "Log Out" on the top right of your screen
+
+## Third Party Resources Used
+* http://stackoverflow.com/questions/17443379/psql-fatal-peer-authentication-failed-for-user-dev
+* http://stackoverflow.com/questions/31168606/
