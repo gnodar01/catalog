@@ -10,6 +10,9 @@ An Application that provides allows the creation of Catalogs, categories, and cu
  
 ### Ubuntu Packages
 * finger
+* unattended-upgrades
+* update-notifier-common
+* fail2ban
 * apache2
 * libapache2-mod-wsgi
 * postgresql
@@ -30,6 +33,9 @@ An Application that provides allows the creation of Catalogs, categories, and cu
 * Set local timezone to UTC
 * Changed SSH port from 22 to 2200
 * Configured Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123)
+* fail2ban
+  * Enabled security to temporarily ban IPs that abuse login to ssh and Apache
+* Setup automatic upgrades using unattended-upgrades
 
 ## Navigating and using the App
 * To create a new Catalog you will need to "Log In"
