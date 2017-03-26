@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import (Base, User, Catalog, Category, Record, Field,
                             RecordTemplate, FieldTemplate, Option)
 
-engine = create_engine('sqlite:///catalogizer.db')
+engine = create_engine('postgresql://catalog:strts1@localhost/catalogizer')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

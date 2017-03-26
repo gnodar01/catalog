@@ -1,16 +1,51 @@
 # README
-Catalogizer:
+Udacity Full-Stack Nanodegree: Linux Server Configuration
+
 An Application that provides allows the creation of Catalogs, categories, and customized records for each category.
 
 ## Running the App
 * All files in this repo were developed and tested on Ubuntu 14.04.3 LTS, running on [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (v5.0.10) VM, created and configured through [Vagrant](https://www.vagrantup.com/)
 	* The Vagrantfile and pg_config.sh will provides the necessary configuration for Vagrant to run this App
 * Clone the Repository
-* CD into the repository using command line and run `vagrant init`
-* SSH into Vagrant: `vagrant ssh`
-* To pre-poulate the database, run `python database_populator.py`
-* To launch the application, run `python catalogizer.py`
-* Open your browser and navigate to `http://localhost:5000/`
+* CD into the repository using command line and run vagrant init
+* SSH into Vagrant
+* To pre-poulate the database, run python database_populator.py
+* To launch the application, run python catalogizer.py
+* Open your browser and navigate to http://localhost:5000/
+
+## Server Info
+* IP Address: `35.163.169.28`
+* SSH Port: `2200`
+* URL: `http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/`
+ 
+### Ubuntu Packages
+* finger
+* unattended-upgrades
+* update-notifier-common
+* fail2ban
+* apache2
+* libapache2-mod-wsgi
+* postgresql
+* python-psycopg2
+* git
+* python-flask
+* python-sqlalchemy
+* python-pip
+
+### Python Packages
+* oauth2client
+* requests
+* httplib2 
+
+### Configurations
+* sudo privilage to user grader
+* permissions in `/etc/sudoers.d/grader`: `grader ALL=(ALL:ALL) ALL`
+* Set local timezone to UTC
+* Changed SSH port from 22 to 2200
+* Configured Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123)
+* fail2ban
+  * Enabled security to temporarily ban IPs that abuse login to ssh and Apache
+* Setup automatic upgrades using unattended-upgrades
 
 ## Navigating and using the App
 * To create a new Catalog you will need to "Log In"
@@ -37,3 +72,7 @@ An Application that provides allows the creation of Catalogs, categories, and cu
 		* For example if you delete a Catalog, all Categories, Record Templates, and Records contained inside of it will also be deleted
 * Each user is only able to Edit and Delete Catalogs, or their contents, if they were the original creator
 * You may log out at any time by clicking "Log Out" on the top right of your screen
+
+## Third Party Resources Used
+* http://stackoverflow.com/questions/17443379/psql-fatal-peer-authentication-failed-for-user-dev
+* http://stackoverflow.com/questions/31168606/
