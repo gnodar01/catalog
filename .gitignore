@@ -67,4 +67,9 @@ gitignore
 catalogizer.db
 client_secrets.json
 fb_client_secrets.json
+<<<<<<< HEAD
 .vagrant
+||||||| merged common ancestors
+=======
+*.swp
+>>>>>>> fab3c7da04b0e2ec0f6704c5e209e5fe3dc885da
