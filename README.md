@@ -1,17 +1,16 @@
 # README
-Udacity Full-Stack Nanodegree: Project 3 - Catalog
-
+Catalogizer:
 An Application that provides allows the creation of Catalogs, categories, and customized records for each category.
 
 ## Running the App
 * All files in this repo were developed and tested on Ubuntu 14.04.3 LTS, running on [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (v5.0.10) VM, created and configured through [Vagrant](https://www.vagrantup.com/)
 	* The Vagrantfile and pg_config.sh will provides the necessary configuration for Vagrant to run this App
 * Clone the Repository
-* CD into the repository using command line and run vagrant init
-* SSH into Vagrant
-* To pre-poulate the database, run python database_populator.py
-* To launch the application, run python catalogizer.py
-* Open your browser and navigate to http://localhost:5000/
+* CD into the repository using command line and run `vagrant init`
+* SSH into Vagrant: `vagrant ssh`
+* To pre-poulate the database, run `python database_populator.py`
+* To launch the application, run `python catalogizer.py`
+* Open your browser and navigate to `http://localhost:5000/`
 
 ## Navigating and using the App
 * To create a new Catalog you will need to "Log In"
