@@ -6,7 +6,7 @@ An Application that provides allows the creation of Catalogs, categories, and cu
 ## Running the App Locally
 * All files in this repo were developed and tested on Ubuntu 14.04.3 LTS, running on [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (v5.0.10) VM, created and configured through [Vagrant](https://www.vagrantup.com/)
   * Install Vagrant on either VirtualBox (free) or your VM of choice
-	* The Vagrantfile and pg_config.sh will provides the necessary configuration for Vagrant to run this App
+  * The Vagrantfile and pg_config.sh will provides the necessary configuration for Vagrant to run this App
 * Clone the Repository
 * CD into the repository using command line
 * You will need to register your app on [Google](https://console.developers.google.com) and [Facebook](https://developers.facebook.com/docs/apps/register)
