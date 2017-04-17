@@ -3,15 +3,23 @@ Udacity Full-Stack Nanodegree: Linux Server Configuration
 
 An Application that provides allows the creation of Catalogs, categories, and customized records for each category.
 
-## Running the App
+## Running the App Locally
 * All files in this repo were developed and tested on Ubuntu 14.04.3 LTS, running on [VirtualBox](https://www.virtualbox.org/wiki/VirtualBox) (v5.0.10) VM, created and configured through [Vagrant](https://www.vagrantup.com/)
+  * Install Vagrant on either VirtualBox (free) or your VM of choice
 	* The Vagrantfile and pg_config.sh will provides the necessary configuration for Vagrant to run this App
 * Clone the Repository
-* CD into the repository using command line and run vagrant init
-* SSH into Vagrant
-* To pre-poulate the database, run python database_populator.py
-* To launch the application, run python catalogizer.py
-* Open your browser and navigate to http://localhost:5000/
+* CD into the repository using command line
+* You will need to register your app on [Google](https://console.developers.google.com) and [Facebook](https://developers.facebook.com/docs/apps/register)
+  * Generate a `client_secrets.json' for Google
+    * Redirect URIs should be set to `localhost:5000/gconnect`, `localhost:5000/login`
+    * Javascript Origins should be set to `localhost:5000`
+  * Generate a `fb_client_secrets.json` for Facebook
+* Run `vagrant up`
+* SSH into Vagrant `vagrant ssh`
+* CD into the shared vagrant directory `cd \vagrant`
+* To pre-populate the database, run python database_populator.py
+* To launch the application, run `python catalogizer.py`
+* Open your browser and navigate to `http://localhost:5000/`
 
 ## Server Info
 * IP Address: `35.163.169.28`
