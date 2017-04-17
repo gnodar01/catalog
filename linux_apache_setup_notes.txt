@@ -1,0 +1,637 @@
+--- Init ---
+# Setup AWS EC2 Virutal Server
+
+1. Download Private Key below
+2. Move the private key file into the folder ~/.ssh (where ~ is your environment's home directory). So if you downloaded the file to the Downloads folder, just execute the following command in your terminal.
+> mv ~/Downloads/udacity_key.rsa ~/.ssh/
+3. Open your terminal and type in
+> chmod 600 ~/.ssh/udacity_key.rsa
+4. In your terminal, type in
+> ssh -i ~/.ssh/udacity_key.rsa root@35.163.169.28
+
+Your Amazon EC2 Instance's public URL will look something like this:
+
+http://ec2-XX-XX-XXX-XXX.us-west-2.compute.amazonaws.com/
+> http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/
+
+--- /Init ---
+
+
+--- Update ---
+# Update all currently installed packages
+
+update packages
+> apt-get update
+
+upgrade the packages
+> apt-get upgrade
+
+=== Prompt ===
+A new version of /boot/grub/menu.lst is available, but the version installed currently has been locally modified.
+
+> show the differences
+> OK
+> keep the local version currently installed
+
+=== /Prompt ===
+
+
+> apt-get autoremove
+
+=== Automatic Updates ===
+
+unattended upgrades are triggered by the nightly apt cron job, /etc/cron.daily/apt
+
+> sudo apt-get install unattended-upgrades update-notifier-common
+
+update-notifier-common package provides a mechanism for other packages to register a reboot request
+
+enable upgrades explicitly
+> sudo dpkg-reconfigure unattended-upgrades
+> yes
+
+this will set two apt configuration properties in /etc/apt/apt.conf.d/20auto-upgrades
+
+___ 20auto-upgrades ___
+
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+
+___ /20auto-upgrades ___
+
+these two settings make sure that package lists are updated via apt-get update and that the /usr/bin/unattended-upgrade script is run
+
+configure unattended-upgrades further through its configuration file in /etc/apt/apt.conf.d/50unattended-upgrades
+
+default configuration just upgrades packages – to also enable automatic reboots, you need to set the following property
+
+___ 50unattended-upgrades ___
+
+// Enable automatic reboots
+// https://blog.mafr.de/2015/02/26/ubuntu-unattended-upgrades/
+Unattended-Upgrade::Automatic-Reboot "true";
+
+___ /50unattended-upgrades ___
+
+monitor the log files in /var/log/unattended-upgrades/
+
+=== /Automatic Updates ===
+
+--- / Update ---
+
+
+--- User ---
+# Create a new user named grader and grant this user sudo permissions
+
+install finger
+> apt-get install finger
+
+create new user "grader"
+> adduser grader
+Enter new Unix password
+> strts1
+Full name
+> Nodari Gogoberidze
+Room Number
+> N/A
+Work Phone
+> 407-401-2267
+Home Phone
+>
+Other
+>
+Is this information correct
+> y
+
+> finger grader
+
+System Restart
+> reboot
+
+copy public key file to grader's home file
+> cd /home/grader
+> mkdir .ssh
+> cp ~/.ssh/authorized_keys /home/grader/.ssh/authorized_keys
+
+change permission on public key to grader
+> cd /home/grader/.ssh
+> chown grader:grader authorized_keys
+
+give grader sudo access by adding permission in etc/sudoers.d directory (this directory is looked at by /etc/sudoers)
+> touch /etc/sudoers.d/grader
+user visudo as the text editor (this opens in Nano on Ubuntu and checks syntax to comply with sudoers specific formatting)
+> visudo -f /etc/sudoers.d/grader
+# if you don't want it to ask for password:
+> grader ALL=(ALL) NOPASSWD:ALL
+or
+> grader ALL=(ALL:ALL) ALL
+
+=== FYI ===
+# The following is just general information
+
+syntax: user name, aplies to all hosts (terminals), acting as all (any) users, as all groups, applies to all (any) commands
+
+to remove it (just FYI)
+> rm /etc/sudoers.d/grader
+
+alternative way to give sudo access is to add grader to sudo group
+> usermod -aG sudo grader
+
+deleting a user (just FYI)
+> [sudo] deluser --remove-home username
+
+=== /FYI ===
+
+login as grader
+> ssh -i ~/.ssh/udacity_key.rsa grader@35.163.169.28
+
+--- /User ---
+
+--- Remote Access ---
+# Do not allow remote login to root
+
+in order to do this, you'll want to edit line 28 of /etc/ssh/sshd_config
+
+read the sshd_config man page
+
+> sudo vim /etc/ssh/sshd_config
+
+___ sshd_config ___
+
+# Authentication:
+LoginGraceTime 120
+# PermitRootLogin without-password
+PermitRootLogin no
+StrictModes yes
+
+___ /sshd_config ___
+
+> sudo reload ssh
+
+--- /Remote Access ---
+
+
+--- Timzone ---
+# Configure the local timezone to UTC
+
+> sudo dpkg-reconfigure tzdata
+select "None of the above"
+select UTC
+
+--- /Timezone ---
+
+
+--- SSH Port ---
+# Change the SSH port from 22 to 2200
+
+open up the sshd config file, and change port 22 to port 2200
+> sudo nano /etc/ssh/sshd_config
+
+restart the ssh service
+> sudo restart ssh
+
+exit and ssh back in, now with port 2200
+> ssh -i ~/.ssh/udacity_key.rsa grader@35.163.169.28 -p 2200
+
+--- /SSH Port ---
+
+
+--- Firewall ---
+# Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123)
+
+disable all incoming connections
+> sudo ufw default deny incoming
+
+enable all outgoing connections
+> sudo ufw default allow outgoing
+
+allow port 2200 (our configured ssh port)
+> sudo ufw allow 2200/tcp
+
+allow port 80 (http)
+> sudo ufw allow www
+
+allow port 123 (NTP)
+> sudo ufw allow ntp
+
+enable ufw
+> sudo ufw enable
+
+check status
+> sudo ufw status
+
+--- /Firewall ---
+
+
+--- Apache ---
+# Install and configure Apache to serve a Python mod_wsgi application
+
+Install Apache
+> sudo apt-get install apache2
+
+install mod_wsgi to hand off certain Apache requests
+> sudo apt-get install libapache2-mod-wsgi
+
+add the url for the amazon EC2 instance in the default configuration file
+uncomment `#ServerName www.example.com`
+change `www.example.com` with EC2 url
+> sudo vim /etc/apache2/sites-enabled/000-default.conf
+> ServerName http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/
+
+restart apache and visit EC2 url to ensure the default index file is being served
+> sudo apache2ctl restart
+in browser (port 80 by default, which is enabled in firewall):
+> http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/
+
+configure Apache to handle requests using the WSGI module.
+> sudo vim /etc/apache2/sites-enabled/000-default.conf
+at the end of the <VirtualHost *:80> block, right before the closing </VirtualHost> line.
+> WSGIScriptAlias / /var/www/html/myapp.wsgi
+restart Apache
+> sudo apache2ctl restart
+
+create the /var/www/html/myapp.wsgi file
+> sudo nano /var/www/html/myapp.wsgi
+
+___ python script ___
+
+def application(environ, start_response):
+    status = '200 OK'
+    output = 'Hello World!'
+
+    response_headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(output)))]
+    start_response(status, response_headers)
+
+    return [output]
+
+___ /python script ___
+
+--- /Apache ---
+
+
+--- PostgreSQL ---
+# Install and configure PostgreSQL
+
+> sudo apt-get install postgresql
+
+install psycopg2 for python to talk to Postgres
+> sudo apt-get install python-psycopg2
+
+login to default user postgres's default postgres database
+> sudo -u postgres psql
+postgres=#
+
+create password on default postgres user
+> /password postgres
+
+create a non-superuser role `admin` for routine management of databases and roles
+> create role admin with createdb createrole password 'strts1';
+
+create a grader role, with admin privilages, login as grader to postgres database, set it's role to admin, and create a grader database so the `psql` command without arguments will, by default, connect to the grader database
+> create role grader with login password 'strts1';
+> grant admin to grader;
+> \q
+> psql postgres
+> set role admin;
+> create database grader;
+
+=== Remote Connections ===
+# Do not allow remote connections
+
+The default for the ubuntu postgres installation is to dissallow remote connections
+To check:
+> sudo less /etc/postgresql/9.3/main/pg_hba.conf
+Should display (sans comments):
+
+TYPE    DATABASE        USER            ADDRESS                 METHOD
+local   all             postgres                                peer
+local   all             all                                     peer
+host    all             all             127.0.0.1/32            md5
+host    all             all             ::1/128                 md5
+
+=== /Remote Connections ===
+
+=== User ===
+# Create a new user named catalog that has limited permissions to your catalog application database
+
+create a catalog role with limited permissions
+> create role catalog login password 'strts1';
+create catalogizer db
+> create database catalogizer;
+set catalog as owner of catalogizer
+> alter database catalogizer owner to catalog;
+
+to be able to log in as user catalog, with default settings, you would need to create a new user (system, not postgres) called catalog, or give special permissions to log in using md5 (password) login
+http://stackoverflow.com/questions/17443379/psql-fatal-peer-authentication-failed-for-user-dev
+> sudo vim /etc/postgresql/9.3/main/pg_hba.conf
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+> local catalogizer     catalog                                 md5
+
+restart postgres
+> sudo service postgresql restart
+
+to login as catalog user to catalogizer database
+> psql catalogizer catalog
+
+=== /User ===
+
+--- /PostgreSQL ---
+
+
+--- Security ---
+# monitor for repeated unsuccessful attempts and ban the incoming IP addresses
+
+> sudo apt-get install fail2ban
+
+copy configuration file to prevent changes from being overwritten if a package update provides a new default file
+> sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+> sudo vim /etc/fail2ban/jail.local
+
+___ jail.local ___
+
+# append personal ip to `ignoreip` setting
+ignoreip = 127.0.0.1/8 68.205.113.247
+
+#
+# HTTP servers
+#
+
+[apache]
+
+enabled  = true
+port     = http,https
+filter   = apache-auth
+# default Apache log location, if different modify
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+findtime = 600
+
+# [apache-overflows] jail is used to block clients who are attempting to request unusually long and suspicious URLs (buffer overflow attempts)
+
+[apache-overflows]
+
+enabled  = true
+
+___ jail.local ___
+
+implement configuration changes
+> sudo service fail2ban restart
+
+see all enabled jails
+> sudo fail2ban-client status
+
+apache-specific jail status
+> sudo fail2ban-client status apache
+
+--- /Security ---
+
+
+--- Git & App setup ---
+# Install git, clone and set up your Catalog App project (from your GitHub repository from earlier in the Nanodegree program) so that it functions correctly when visiting your server’s IP address in a browser. Remember to set this up appropriately so that your .git directory is not publicly accessible via a browser!
+
+install git
+> sudo apt-get install git
+
+> cd /var/www
+> sudo mkdir catalog
+> cd catalog
+> sudo git clone -b amzn-master https://github.com/gnodar01/catalog.git
+> cd catalog
+
+=== One time git changes ===
+> git clone https://github.com/gnodar01/catalog.git
+
+> git checkout -b amzn-master
+
+> git push origin amzn-master
+
+> git config --global user.email "gnodar01@gmail.com"
+> git config --global user.name "Nodar Gogoberidze"
+
+change engine to postgres, rather than sqlite
+> sudo vim catalogizer.py
+> sudo vim database_setup.py
+> sudo vim database_populator.py
+
+___ catalogizer.py, database_setup.py, and database_populator.py ___
+
+# dialect+driver://username:password@host:port/database
+engine = create_engine('postgresql://catalog:strts1@localhost/catalogizer')
+
+___ /catalogizer.py, database_setup.py, and database_populator.py ___
+
+> sudo git commit -am "Change sql database to postgres"
+> sudo git push
+
+postgres requires Enum to have a name attribtue
+> sudo vim database_setup.py 
+
+___ database_setup.py ___
+
+kind = Column(Enum('short_text',
+                   'long_text',
+                   'drop_down',
+                   'check_box',
+                   'radio',
+                   name='field_kind'), nullable=False)
+
+___ /database_setup.py ___
+
+> sudo git commit -am "Add name property to Enum Column for postgres"
+> sudo git push
+
+include absolute path in catalogizer
+
+> sudo vim catalogizer.py
+
+___ catalogizer.py ___
+
+# Near top, before CLIENT_ID
+APP_PATH = '/var/www/catalog/catalog/'
+
+# rewrite
+CLIENT_ID = json.loads(open(APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
+oauth_flow = flow_from_clientsecrets(APP_PATH + 'client_secrets.json', scope='')
+app_id = json.loads(open(
+         APP_PATH + 'fb_client_secrets.json', 'r').read())['web']['app_id']
+app_secret = json.loads(open(
+             APP_PATH + 'fb_client_secrets.json', 'r').read())['web']['app_secret']
+
+___ /catalogizer.py ___
+
+> sudo git commit -am "Set absolute path for secrets files"
+> sudo git push
+
+=== /One time git changes ===
+
+=== Packages ===
+
+install flask
+> sudo apt-get install python-flask
+
+install sqlalchemy
+> sudo apt-get install python-sqlalchemy
+
+install pip
+> sudo apt-get install python-pip
+
+additional python package from requirements file in catalog dir
+> touch requirements.txt
+> vim requirements.txt
+
+___ requirements.txt ___
+
+oauth2client
+requests
+httplib2
+
+___ /requirements.txt ___
+
+install python packages needed from requirements.txt file
+> sudo pip install -r requirements.txt
+
+=== /Packages ===
+
+=== Apache for app ===
+
+make catalog a package
+> cd /var/www/catalog/catalog
+> sudo touch __init__.py
+> sudo git commit -am "Add __init__ file to utilize catalog as package"
+> sudo git push
+
+create a wsgi file in base catalog directory
+> sudo vim /var/www/catalog/myapp.wsgi
+
+this file contains the code mod_wsgi is executing on startup to get the application object
+___ myapp.wsgi ___
+
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/catalog/")
+
+from catalog.catalogizer import app as application
+application.secret_key = 'super_secret_key'
+
+___ /myapp.wsgi ___
+
+create a configuration file for apache app
+> sudo vim /etc/apache2/sites-available/catalogizer.conf
+
+___ catalogizer.conf ___
+
+<VirtualHost *:80>
+                ServerName mywebsite.com
+                ServerAdmin admin@mywebsite.com
+                WSGIScriptAlias / /var/www/catalog/myapp.wsgi
+                <Directory /var/www/catalog/catalog>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                Alias /static /var/www/catalog/catalog/static
+                <Directory /var/www/catalog/catalog/static/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+___ /catalogizer.conf ___
+
+enable the virtual host
+> sudo a2ensite catalogizer
+
+disable the default host
+> sudo a2dissite 000-default
+
+to activate the new configuration, you need to run
+> service apache2 reload
+
+restart apache
+> sudo service apache2 restart 
+
+=== /Apache for app ===
+
+--- /Git & App setup ---
+
+
+--- Authentication ---
+#  Your Amazon EC2 Instance's public URL will look something like this: http://ec2-XX-XX-XXX-XXX.us-west-2.compute.amazonaws.com/  where the X's are replaced with your instance's IP address. You can use this url when configuring third party authentication. Please note the the IP address part of the AWS URL uses dashes, not dots.
+
+need to tell Google and Facbook to authorize connections
+
+__ https://console.developers.google.com ___
+
+# credentials -> Catalogizer - web app
+
+# Authorized Javascript origins
+http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com
+
+# Authorized redirect URIs
+http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/login
+http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/gconnect
+
+___ /https://console.developers.google.com ___
+
+___ developers.facebook.com ___
+
+# Website -> Site URL
+http://ec2-35-163-169-28.us-west-2.compute.amazonaws.com/
+
+___ /developers.facebook.com ___
+
+> cd /var/www/catalog/catalog
+> python database_populator.py
+
+download client secrets from console.developers.google.com and copy contents
+> sudo touch client_secrets.json
+> sudo vim client_secrets.json
+
+paste contents in insert mode
+> i
+> cmd-v
+> :wq
+
+create facebook client secrets file
+> sudo touch fb_client_secrets.json
+copy from original copy
+> sudo vim fb_client_secrets.json
+
+past contents in insert mode
+> i
+> cmd-v
+> :wq
+
+--- /Authentication ---
+
+!* misc notes *
+
+won't work on 0.0.0.0
+probably can't run it "locally"
+but running it produces no errors
+> python catalogizer.py
+
+
+order of ownership (parent to child):
+- user
+  - catalog
+    - category
+      - record_template
+        - record (fk category as well)
+        - field_template
+          - option
+          - field (fk record as well)
+
+delete user:
+> sudo deluser --remove-home newuser
+
+remove sudo privilages
+> sudo visudo -f /etc/sudoers.d/grader
+> {user name} ALL=(ALL:ALL) ALL   # DELETE THIS LINE
+
+!* /misc notes *
