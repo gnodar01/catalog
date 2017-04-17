@@ -19,7 +19,8 @@ app = Flask(__name__)
 APPLICATION_NAME = "Catalogizer"
 
 # client id for google openID
-APP_PATH = '/var/www/catalog/catalog/'
+# APP_PATH = '/var/www/catalog/catalog/'
+APP_PATH = '/vagrant/'
 CLIENT_ID = json.loads(open(
                        APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 
